@@ -55,8 +55,8 @@ What would you like to graduate?
 
 ### Step 3: Graduate Spec
 
-**From:** `.devwork/feature/{jira-id}/spec.md`
-**To:** `.devwork/specs/{jira-id}-{slug}.md`
+**From:** `.devwork/feature/{task-id}/spec.md`
+**To:** `.devwork/specs/{task-id}-{slug}.md`
 
 Process:
 1. Read working spec
@@ -65,8 +65,8 @@ Process:
    ```markdown
    # Spec: {Title}
    
-   > Graduated from {JIRA-ID} on {DATE}
-   > Original: `.devwork/feature/{jira-id}/spec.md`
+   > Graduated from {task-id} on {DATE}
+   > Original: `.devwork/feature/{task-id}/spec.md`
    
    ---
    
@@ -80,7 +80,7 @@ Process:
 
 ### Step 4: Graduate ADR(s)
 
-**From:** `.devwork/feature/{jira-id}/adr/*.md` or `.devwork/feature/{jira-id}/adr-NNN.md`
+**From:** `.devwork/feature/{task-id}/adr/*.md` or `.devwork/feature/{task-id}/adr-NNN.md`
 **To:** `.devwork/decisions/NNNN-{slug}.md`
 
 Process:
@@ -95,8 +95,8 @@ Process:
    ```markdown
    # ADR-{NNNN}: {Title}
    
-   > Graduated from {JIRA-ID} on {DATE}
-   > Original: `.devwork/feature/{jira-id}/adr/{filename}.md`
+   > Graduated from {task-id} on {DATE}
+   > Original: `.devwork/feature/{task-id}/adr/{filename}.md`
    
    ---
    
@@ -167,7 +167,7 @@ Graduated files follow industry standards:
 
 ### Specs (`.devwork/specs/`)
 ```
-{jira-id}-{slug}.md
+{task-id}-{slug}.md
 
 Examples:
 - nt-0001-user-authentication.md

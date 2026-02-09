@@ -17,9 +17,9 @@ Design the implementation approach and create a task breakdown.
 
 ### Step 1: Load Context
 
-1. Read `.devwork/{type}/{jira-id}/status.md`
-2. Read `.devwork/{type}/{jira-id}/research.md`
-3. Read `.devwork/{type}/{jira-id}/spec.md` (if exists)
+1. Read `.devwork/{type}/{task-id}/status.md`
+2. Read `.devwork/{type}/{task-id}/research.md`
+3. Read `.devwork/{type}/{task-id}/spec.md` (if exists)
 4. Read `.devwork/constitution.md`
 
 ### Step 2: Design Approach
@@ -33,10 +33,10 @@ Consider:
 
 ### Step 3: Create Implementation Plan
 
-Create `.devwork/{type}/{jira-id}/plan.md`:
+Create `.devwork/{type}/{task-id}/plan.md`:
 
 ```markdown
-# Implementation Plan: {JIRA-ID}
+# Implementation Plan: {task-id}
 
 > {Brief description}
 
@@ -166,17 +166,17 @@ Create `.devwork/{type}/{jira-id}/plan.md`:
 
 ## Related Documents
 
-- Spec: `.devwork/{type}/{jira-id}/spec.md`
-- Research: `.devwork/{type}/{jira-id}/research.md`
-- Tasks: `.devwork/{type}/{jira-id}/tasks.md`
+- Spec: `.devwork/{type}/{task-id}/spec.md`
+- Research: `.devwork/{type}/{task-id}/research.md`
+- Tasks: `.devwork/{type}/{task-id}/tasks.md`
 ```
 
 ### Step 4: Generate Task Checklist
 
-Create `.devwork/{type}/{jira-id}/tasks.md`:
+Create `.devwork/{type}/{task-id}/tasks.md`:
 
 ```markdown
-# Tasks: {JIRA-ID}
+# Tasks: {task-id}
 
 > Generated from plan.md on {YYYY-MM-DD}
 
@@ -210,7 +210,7 @@ Create `.devwork/{type}/{jira-id}/tasks.md`:
 
 ## Final
 
-- [ ] Run linting (pint, phpstan, eslint)
+- [ ] Run linting (use detected tools from constitution.md)
 - [ ] Manual verification
 - [ ] Update status.md
 - [ ] /deliver
@@ -226,7 +226,7 @@ Create `.devwork/{type}/{jira-id}/tasks.md`:
 
 ### Step 5: Update Status
 
-Update `.devwork/{type}/{jira-id}/status.md`:
+Update `.devwork/{type}/{task-id}/status.md`:
 
 ```markdown
 ## Tasks
@@ -252,8 +252,8 @@ Start Phase 1: {phase name}. See tasks.md for checklist.
 Output:
 
 ```
-✓ Plan complete: .devwork/{type}/{jira-id}/plan.md
-✓ Tasks generated: .devwork/{type}/{jira-id}/tasks.md
+✓ Plan complete: .devwork/{type}/{task-id}/plan.md
+✓ Tasks generated: .devwork/{type}/{task-id}/tasks.md
 
 Summary:
 - Phases: {count}

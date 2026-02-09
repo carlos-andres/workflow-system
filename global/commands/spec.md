@@ -16,9 +16,9 @@ Conduct a structured interview to clarify requirements, edge cases, and acceptan
 
 ### Step 1: Load Context
 
-1. Read `.devwork/{type}/{jira-id}/status.md`
-2. Read `.devwork/{type}/{jira-id}/research.md`
-3. Read `.devwork/{type}/{jira-id}/README.md`
+1. Read `.devwork/{type}/{task-id}/status.md`
+2. Read `.devwork/{type}/{task-id}/research.md`
+3. Read `.devwork/{type}/{task-id}/README.md`
 
 ### Step 2: Interview Process
 
@@ -67,10 +67,10 @@ Ask questions in categories. Ask 2-3 questions at a time, not all at once.
 
 ### Step 3: Document Specification
 
-Create `.devwork/{type}/{jira-id}/spec.md`:
+Create `.devwork/{type}/{task-id}/spec.md`:
 
 ```markdown
-# Specification: {JIRA-ID}
+# Specification: {task-id}
 
 > {Brief description}
 
@@ -164,13 +164,13 @@ As a {actor}, I want to {action} so that {benefit}.
 
 ## Related Documents
 
-- Research: `.devwork/{type}/{jira-id}/research.md`
-- Plan: `.devwork/{type}/{jira-id}/plan.md` (after /plan)
+- Research: `.devwork/{type}/{task-id}/research.md`
+- Plan: `.devwork/{type}/{task-id}/plan.md` (after /plan)
 ```
 
 ### Step 4: Update Status
 
-Update `.devwork/{type}/{jira-id}/status.md`:
+Update `.devwork/{type}/{task-id}/status.md`:
 
 ```markdown
 ## Tasks
@@ -191,14 +191,14 @@ Run `/plan` to design the implementation approach.
 
 ### Step 5: Update README
 
-Update `.devwork/{type}/{jira-id}/README.md` with objective and scope from spec.
+Update `.devwork/{type}/{task-id}/README.md` with objective and scope from spec.
 
 ### Step 6: Confirm
 
 Output:
 
 ```
-✓ Specification complete: .devwork/{type}/{jira-id}/spec.md
+✓ Specification complete: .devwork/{type}/{task-id}/spec.md
 
 Summary:
 - Core requirements: {count}

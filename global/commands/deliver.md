@@ -16,11 +16,18 @@ Final verification and commit message generation. NEVER auto-commits.
 
 ### Step 1: Load Context
 
-1. Read `.devwork/{type}/{jira-id}/status.md`
-2. Read `.devwork/{type}/{jira-id}/tasks.md` (if exists)
-3. Read `.devwork/{type}/{jira-id}/spec.md` (if exists)
+1. Read `.devwork/{type}/{task-id}/status.md`
+2. Read `.devwork/{type}/{task-id}/tasks.md` (if exists)
+3. Read `.devwork/{type}/{task-id}/spec.md` (if exists)
 
-### Step 2: Run Verification Checklist
+### Step 2: Detect Project Tools
+
+1. Read `.devwork/constitution.md` for configured linters, formatters, test runners
+2. If no constitution: detect from project manifests (`composer.json`, `package.json`, `Package.swift`, `Cargo.toml`, `pyproject.toml`, `go.mod`)
+
+Use detected tools throughout — never hardcode tool names or paths.
+
+### Step 3: Run Verification Checklist
 
 Ask me to confirm each:
 
@@ -28,13 +35,13 @@ Ask me to confirm each:
 ## Pre-Delivery Checklist
 
 ### Code Quality
-- [ ] Linting passes (pint, phpstan, eslint)
-- [ ] No debug code left (dd(), console.log(), var_dump())
+- [ ] Linting/formatting passes (use detected tools)
+- [ ] No debug code left (search for common debug patterns per stack)
 - [ ] No commented-out code
 - [ ] Follows project conventions (constitution.md)
 
 ### Testing
-- [ ] Relevant tests pass
+- [ ] Relevant tests pass (use detected test runner)
 - [ ] New tests added (if new feature)
 - [ ] No test regressions
 
@@ -50,7 +57,7 @@ Ask me to confirm each:
 Ready to proceed? (y/n)
 ```
 
-### Step 3: Generate Commit Message
+### Step 4: Generate Commit Message
 
 Based on task type and changes, generate conventional commit:
 
@@ -79,10 +86,10 @@ feat(inventory): add year filter to Nova resource
 - Pre-select current year by default
 - Register filter in Inventory resource
 
-Closes TASKS-1400
+Closes AUTH-001
 ```
 
-### Step 4: Show Summary
+### Step 5: Show Summary
 
 ```
 ## Delivery Summary
@@ -110,16 +117,16 @@ git commit -m "{message}"
 ### Post-Commit
 - [ ] Push to feature branch
 - [ ] Create PR (if applicable)
-- [ ] Update Jira ticket
+- [ ] Update ticket
 ```
 
-### Step 5: Update Status (Final)
+### Step 6: Update Status (Final)
 
-Update `.devwork/{type}/{jira-id}/status.md`:
+Update `.devwork/{type}/{task-id}/status.md`:
 
 ```markdown
 ## Current State
-✅ DELIVERED
+DELIVERED
 
 ## Tasks
 [DONE] All tasks completed
@@ -137,14 +144,41 @@ Update `.devwork/{type}/{jira-id}/status.md`:
 - Ready for commit
 ```
 
-### Step 6: Offer Archive
+### Step 7: Offer Graduation
+
+Check if ticket has artifacts worth preserving:
 
 ```
-Task complete! Archive workspace?
-- Yes: Move to .devwork/_archive/{jira-id}/
-- No: Keep in place for reference
+This ticket has:
+- Spec: {yes/no} → {graduated/not graduated}
+- ADRs: {count} → {graduated/not graduated}
 
-(You can archive later manually)
+Graduate significant artifacts? (y/n)
+- Yes: Run /graduate all
+- No: Skip to archive
+```
+
+### Step 8: Offer Archive
+
+```
+Archive workspace?
+- Yes: Run /archive
+- No: Keep in place for reference
+```
+
+### Final Output
+
+```
+Task {task-id} complete!
+
+Commit ready:
+  git add {files}
+  git commit -m "{type}({scope}): {description}"
+
+Artifacts:
+  - Spec graduated to: .devwork/specs/{task-id}-{slug}.md
+  - ADR graduated to: .devwork/decisions/NNNN-{slug}.md
+  - Workspace archived to: .devwork/_archive/{task-id}/
 ```
 
 ## Quick Deliver (for Hotfix)
@@ -165,7 +199,7 @@ feat({scope}): {what it does}
 
 {bullet points of changes}
 
-Closes {JIRA-ID}
+Closes {task-id}
 ```
 
 ### Bug Fix
@@ -174,7 +208,7 @@ fix({scope}): {what was fixed}
 
 {root cause and solution}
 
-Fixes {JIRA-ID}
+Fixes {task-id}
 ```
 
 ### Refactor
@@ -183,7 +217,7 @@ refactor({scope}): {what was refactored}
 
 {why and what changed}
 
-Refs {JIRA-ID}
+Refs {task-id}
 ```
 
 ## Important
@@ -191,48 +225,4 @@ Refs {JIRA-ID}
 - **NEVER run git commit automatically**
 - **ALWAYS show the commit message for review**
 - **ALWAYS let user execute the commit**
-
----
-
-## After Commit: Graduation & Archive
-
-### Step 7: Offer Graduation
-
-Check if ticket has artifacts worth preserving:
-
-```
-This ticket has:
-- Spec: {yes/no} → {graduated/not graduated}
-- ADRs: {count} → {graduated/not graduated}
-
-Graduate significant artifacts? (y/n)
-- Yes: Run /graduate all
-- No: Skip to archive
-```
-
-### Step 8: Offer Archive
-
-```
-Archive workspace?
-- Yes: Move .devwork/{type}/{jira-id}/ to .devwork/_archive/{jira-id}/
-- No: Keep in place for reference
-
-(You can archive later with: mv .devwork/{type}/{jira-id} .devwork/_archive/)
-```
-
-### Final Output
-
-```
-✓ Task NT-0001 complete!
-
-Commit ready:
-  git add {files}
-  git commit -m "feat(auth): add user authentication"
-
-Artifacts:
-  - Spec graduated to: .devwork/specs/nt-0001-user-authentication.md
-  - ADR graduated to: .devwork/decisions/0001-auth-choice.md
-  - Workspace archived to: .devwork/_archive/nt-0001/
-
-🎉 Well done!
-```
+- Detect tools from constitution.md / project manifests — never hardcode tool paths

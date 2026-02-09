@@ -4,12 +4,12 @@ Classify the task and create the working environment.
 
 ## Usage
 ```
-/intake {JIRA-ID} "{brief description}"
+/intake {task-id} "{brief description}"
 ```
 
 ## Example
 ```
-/intake TASKS-1400 "Add year filter to inventory"
+/intake AUTH-001 "Add user authentication"
 ```
 
 ## Instructions
@@ -19,7 +19,7 @@ Classify the task and create the working environment.
 First, ensure the global `.devwork/` structure exists:
 
 ```bash
-mkdir -p .devwork/{decisions,specs,feature,hotfix,_archive}
+mkdir -p .devwork/{decisions,specs,feature,hotfix,_archive,_scratch}
 ```
 
 **Global Structure** (created once per project):
@@ -33,17 +33,24 @@ mkdir -p .devwork/{decisions,specs,feature,hotfix,_archive}
 └── _archive/            # Completed tickets
 ```
 
-### Step 2: Classify the Task
+### Step 2: Check for Phase 0 Docs
+
+Look for `.devwork/_scratch/phase0/` — if found:
+- Read `01-idea.md`, `03-decisions.md`, `04-specs.md` for context
+- Use them to pre-populate task context in status.md
+- Note Phase 0 docs in workspace references
+
+### Step 3: Classify the Task
 
 Ask me ONE question:
 
 > **What type of task is this?**
 > 1. **Hotfix** - Urgent production fix (light docs)
-> 2. **Bugfix** - Non-urgent bug fix (medium docs)  
+> 2. **Bugfix** - Non-urgent bug fix (medium docs)
 > 3. **Feature** - New functionality (full docs)
 > 4. **Refactor** - Code improvement (full docs)
 
-### Step 3: Determine Scope (for Feature/Refactor)
+### Step 4: Determine Scope (for Feature/Refactor)
 
 If Feature or Refactor, ask:
 
@@ -51,37 +58,40 @@ If Feature or Refactor, ask:
 > 1. **Yes** - I know exactly what to build (skip /spec)
 > 2. **No** - Requirements need clarification (full workflow with /spec)
 
-### Step 4: Create Ticket Workspace
+### Step 5: Suggest Work Mode
+
+Based on classification and context:
+
+| Condition | Suggested Mode |
+|-----------|---------------|
+| Phase 0 docs exist + greenfield | **Mode 1: Deep Dive** — `/phase0` → `/constitution` → `/intake` → `/research` → `/spec` → `/plan` → implement → `/verify` → `/deliver` → `/graduate` |
+| Existing codebase + feature/refactor | **Mode 2: Hybrid** — `/intake` → `/research` → `/plan` → implement → `/verify` → `/deliver`. Skip `/spec` if requirements clear. |
+| Hotfix / bugfix / clear scope | **Mode 3: Straight** — `/intake` → implement → `/deliver`. Or skip `/intake` entirely if no tracking needed. |
+
+### Step 6: Create Ticket Workspace
 
 Based on classification, create the workspace:
 
 **For Hotfix:**
 ```
-.devwork/hotfix/{jira-id}/
+.devwork/hotfix/{task-id}/
 └── status.md
 ```
 
 **For Bugfix/Feature/Refactor:**
 ```
-.devwork/feature/{jira-id}/
-├── README.md
-├── status.md
-├── research.md     # (filled by /research)
-├── spec.md         # (filled by /spec - working draft)
-├── plan.md         # (filled by /plan)
-├── tasks.md        # (generated from plan)
-└── adr/            # (decisions for this ticket)
-    └── .gitkeep
+.devwork/feature/{task-id}/
+└── status.md
 ```
 
-**Note:** Working `spec.md` stays here during development. When finalized, graduate to `.devwork/specs/` for permanent record.
+**Only create `status.md`** — other files (research.md, spec.md, plan.md, tasks.md, adr/) are created by their respective commands when needed.
 
-### Step 5: Initialize status.md
+### Step 7: Initialize status.md
 
 Create initial status file:
 
 ```markdown
-# Status: {JIRA-ID}
+# Status: {task-id}
 
 > {brief description}
 
@@ -89,6 +99,7 @@ Create initial status file:
 - **Type**: {hotfix|bugfix|feature|refactor}
 - **Created**: {YYYY-MM-DD}
 - **Scope Clear**: {yes|no}
+- **Work Mode**: {Deep Dive|Hybrid|Straight}
 
 ## Current State
 Just started. Workspace created.
@@ -103,82 +114,51 @@ Just started. Workspace created.
 [TODO] Graduate artifacts (if significant)
 
 ## Next Action
-Run `/research` to explore the codebase.
+{Based on work mode — e.g., "Run `/research` to explore the codebase."}
 
 ## Session Log
 ### {YYYY-MM-DD}
 - Created workspace
+{- Phase 0 docs found: referencing .devwork/_scratch/phase0/}
 ```
 
-### Step 6: Initialize README.md (for non-hotfix)
-
-```markdown
-# {JIRA-ID}: {Brief Description}
-
-## Objective
-{To be filled after /spec or /plan}
-
-## Scope
-### Included
-- {To be defined}
-
-### Excluded
-- {To be defined}
-
-## Context
-- **Jira**: {JIRA-ID}
-- **Type**: {type}
-- **Created**: {date}
-
-## Related Files
-{To be filled by /research}
-
-## Artifacts
-- Working spec: `spec.md` → Graduates to `.devwork/specs/{jira-id}-{slug}.md`
-- Decisions: `adr/*.md` → Graduate to `.devwork/decisions/NNNN-{slug}.md`
-```
-
-### Step 7: Confirm & Guide
+### Step 8: Confirm & Guide
 
 Output:
 
 ```
 ✓ Project structure verified: .devwork/
-  ├── constitution.md
-  ├── decisions/          # Graduated ADRs
-  ├── specs/              # Graduated specs
-  └── ...
+✓ Workspace created: .devwork/{type}/{task-id}/
+Work mode: {mode}
 
-✓ Workspace created: .devwork/{type}/{jira-id}/
-
-Task: {JIRA-ID} - {description}
+Task: {task-id} - {description}
 Type: {type}
-Path: {hotfix|feature} workflow
 
-Next steps:
-1. /research - Explore codebase for patterns and conventions
-{2. /spec - Clarify requirements (if scope unclear)}
-{3. /plan - Design implementation approach}
+Next: {suggested command based on mode}
 ```
 
 ## Workflow Paths
 
-### Hotfix Path (fastest)
+### Mode 1: Deep Dive (greenfield)
 ```
-/intake → /research (quick) → implement → /deliver
-```
-
-### Bugfix Path (medium)
-```
-/intake → /research → /plan (light) → implement → /deliver
+/phase0 → /constitution → /intake → /research → /spec → /plan → implement → /verify → /deliver → /graduate
 ```
 
-### Feature Path - Clear Scope
+### Mode 2: Hybrid (existing codebase)
 ```
-/intake → /research → /plan → implement → /status → /deliver
+/intake → /research → /plan → implement → /verify → /deliver
+Skip /spec if requirements clear. Use /status between sessions.
 ```
 
-### Feature Path - Unclear Scope
+### Mode 3: Straight (hotfix, clear scope)
 ```
-/intake → /research → /spec → /plan → implement → /status → /deliver
+/intake → implement → /deliver
+Or skip /intake entirely if no tracking needed.
+```
+
+### Cross-cutting (any mode)
+```
+/context — resume after context switch
+/status  — update progress
+/verify  — checkpoint before /deliver
 ```

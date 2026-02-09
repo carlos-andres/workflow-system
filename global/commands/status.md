@@ -16,7 +16,7 @@ Update the status file with current progress. Essential for context-switching be
 
 ### Step 1: Load Current Status
 
-Read `.devwork/{type}/{jira-id}/status.md`
+Read `.devwork/{type}/{task-id}/status.md`
 
 ### Step 2: Determine Update Type
 
@@ -32,7 +32,7 @@ If no message:
 Update the relevant sections:
 
 ```markdown
-# Status: {JIRA-ID}
+# Status: {task-id}
 
 ## Current State
 {Updated description of where we are now}
@@ -58,7 +58,7 @@ Update the relevant sections:
 
 ### Step 4: Update tasks.md (if exists)
 
-Check off completed items in `.devwork/{type}/{jira-id}/tasks.md`
+Check off completed items in `.devwork/{type}/{task-id}/tasks.md`
 
 ### Step 5: Check for Phase Completion
 
@@ -88,7 +88,7 @@ If you just want to see current status without updating:
 
 Output:
 ```
-{JIRA-ID}: {description}
+{task-id}: {description}
 Phase: {current phase}
 Progress: {n}/{total} tasks
 Blocked: {yes/no}

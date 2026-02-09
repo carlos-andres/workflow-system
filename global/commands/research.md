@@ -15,7 +15,7 @@ Explore the codebase to understand patterns, conventions, and related code befor
 
 ### Step 1: Load Context
 
-1. Read `.devwork/{type}/{jira-id}/status.md` to understand the task
+1. Read `.devwork/{type}/{task-id}/status.md` to understand the task
 2. Read `.devwork/constitution.md` for project conventions
 3. Read project root `CLAUDE.md` for project-specific rules
 
@@ -45,10 +45,10 @@ Using `rg` (ripgrep) and `fd`, search for:
 
 ### Step 3: Document Findings
 
-Update `.devwork/{type}/{jira-id}/research.md`:
+Update `.devwork/{type}/{task-id}/research.md`:
 
 ```markdown
-# Research: {JIRA-ID}
+# Research: {task-id}
 
 > Codebase exploration for: {brief description}
 
@@ -67,13 +67,13 @@ Update `.devwork/{type}/{jira-id}/research.md`:
 ## Existing Patterns
 
 ### Code Pattern
-```php
+```
 // Example from {file}
 {code snippet showing the pattern to follow}
 ```
 
 ### Test Pattern
-```php
+```
 // Example from {test file}
 {code snippet showing test pattern}
 ```
@@ -113,7 +113,7 @@ Update `.devwork/{type}/{jira-id}/research.md`:
 
 ### Step 4: Update Status
 
-Update `.devwork/{type}/{jira-id}/status.md`:
+Update `.devwork/{type}/{task-id}/status.md`:
 
 ```markdown
 ## Tasks
@@ -135,7 +135,7 @@ Run `/spec` to clarify requirements (if needed) or `/plan` to design implementat
 Output concise summary:
 
 ```
-✓ Research complete: .devwork/{type}/{jira-id}/research.md
+✓ Research complete: .devwork/{type}/{task-id}/research.md
 
 Key findings:
 - Pattern to follow: {pattern}
