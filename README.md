@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2.0-blue?style=flat-square" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-1.3.0-blue?style=flat-square" alt="Version"/>
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"/>
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="PRs Welcome"/>
 </p>
@@ -42,7 +42,7 @@ A **structured workflow system** that brings order to AI-assisted development:
 /phase0 → /constitution → /intake → /research → /spec → /plan → implement → /verify → /deliver → /graduate → /archive
 ```
 
-One command to set up. Fourteen commands to master. Zero chaos.
+One command to set up. Sixteen commands to master. Zero chaos.
 
 ---
 
@@ -165,7 +165,8 @@ Graduate important work with `/graduate`. Keep your knowledge, clean your repos.
 | `/intake` | Start | Classify task, create workspace, suggest work mode |
 | `/research` | Discover | Explore codebase, find patterns |
 | `/spec` | Define | Requirements interview |
-| `/plan` | Design | Implementation approach + tasks |
+| `/plan` | Design | Implementation approach + tasks + sizing |
+| `/dispatch` | Execute | Orchestrate M/L-sized tasks with sub-agents |
 | `/status` | Track | Update progress, set "Next Action" |
 | `/context` | Resume | Quick state summary after context switch |
 | `/verify` | Checkpoint | Validate phase/task completion |
@@ -204,7 +205,7 @@ All workflow commands are also available with the `wosy:` namespace prefix for c
 /wosy:intake     # Same as /intake
 /wosy:plan       # Same as /plan
 /wosy:deliver    # Same as /deliver
-# ... etc for all 14 commands
+# ... etc for all 16 commands
 ```
 
 The `wosy/` subfolder in `~/.claude/commands/` contains the canonical copies. The flat files serve as aliases for convenience.
@@ -266,9 +267,10 @@ chmod +x install.sh
     ├── deliver.md         # Commit preparation
     ├── graduate.md        # Artifact promotion
     ├── pr-review.md          # Code review from diff
+    ├── dispatch.md        # Task orchestration
     ├── archive.md         # Workspace cleanup
     └── wosy/              # Namespaced canonical copies
-        ├── (all 14 commands)
+        ├── (all 16 commands)
 ```
 
 ### Manual Installation

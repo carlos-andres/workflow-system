@@ -110,6 +110,15 @@ Before coding:
 {key commands from constitution, max 6-8}
 ```
 
+## Integrations
+{From constitution.md Integrations table — ticket system, PR review CLI, code hosting}
+
+## Orchestration
+- `/research` — parallel Explore agents for multi-domain investigation
+- `/plan` — t-shirt sizes tasks (XS→XL) based on effort/complexity/risk from research
+- `/dispatch` — wosy orchestrates M/L-sized tasks with sub-agents
+- XL tasks: split into tickets, or escalate to `superpowers:subagent-driven-development`
+
 ## Current Focus
 
 {Optional: what's being worked on now, priority areas, active branches}

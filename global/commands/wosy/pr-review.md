@@ -13,6 +13,11 @@ $ARGUMENTS
 
 ## Instructions
 
+### 0. Load Integration Config
+Read `.devwork/constitution.md` → `## Integrations` section.
+Use the configured PR review CLI (bb-comments, gh, etc.) if available.
+If no PR CLI configured, ask user for the command to fetch PR comments.
+
 ### 1. Parse Input
 
 If `$ARGUMENTS` is empty, respond with usage hint and stop.

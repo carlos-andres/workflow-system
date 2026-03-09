@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #===============================================================================
-# Claude Code Workflow System - Installer v1.2.0
+# Claude Code Workflow System - Installer v1.3.0
 #===============================================================================
 #
 # This script installs the complete workflow system for Claude Code:
 # - Cleans ALL existing custom commands (fresh start)
 # - Installs new CLAUDE.md with workflow awareness
-# - Installs all slash commands (15 total, wosy/ namespace)
+# - Installs all slash commands (16 total, wosy/ namespace)
 # - Adds .devwork/ to global gitignore
 #
 # Usage: ./install.sh
@@ -137,6 +137,7 @@ install_commands() {
         "archive"
         "pr-review"
         "rebuild"
+        "dispatch"
     )
 
     # Install wosy/ namespace (single source of truth)
@@ -199,7 +200,7 @@ verify_installation() {
     fi
 
     # Check commands
-    local commands=("phase0" "constitution" "project-init" "intake" "research" "spec" "plan" "status" "context" "verify" "deliver" "graduate" "archive" "pr-review" "rebuild")
+    local commands=("phase0" "constitution" "project-init" "intake" "research" "spec" "plan" "status" "context" "verify" "deliver" "graduate" "archive" "pr-review" "rebuild" "dispatch")
     for cmd in "${commands[@]}"; do
         if [ -f "$COMMANDS_DIR/wosy/$cmd.md" ]; then
             print_success "/wosy:$cmd command installed"
@@ -246,6 +247,7 @@ print_summary() {
     echo "  ~/.claude/commands/wosy/archive.md        # Workspace cleanup"
     echo "  ~/.claude/commands/wosy/pr-review.md      # Code review from diff"
     echo "  ~/.claude/commands/wosy/rebuild.md        # Re-detect stack + update config"
+    echo "  ~/.claude/commands/wosy/dispatch.md       # Task orchestration with sub-agents"
     echo ""
     echo -e "${YELLOW}Quick Start:${NC}"
     echo ""
@@ -287,6 +289,7 @@ print_summary() {
     echo "  /wosy:deliver       - Final check, commit message"
     echo "  /wosy:graduate      - Promote artifacts to shareable location"
     echo "  /wosy:archive       - Archive completed workspaces"
+    echo "  /wosy:dispatch      - Orchestrate M/L-sized tasks with sub-agents"
     echo "  /wosy:pr-review     - Code review from commit or branch diff"
     echo ""
 
@@ -300,12 +303,12 @@ print_summary() {
 #-------------------------------------------------------------------------------
 
 main() {
-    print_header "Claude Code Workflow System Installer v1.2.0"
+    print_header "Claude Code Workflow System Installer v1.3.0"
 
     echo "This will:"
     echo "  1. Clean ALL existing commands (fresh start)"
     echo "  2. Install enhanced CLAUDE.md"
-    echo "  3. Install 15 workflow commands (wosy/ namespace)"
+    echo "  3. Install 16 workflow commands (wosy/ namespace)"
     echo "  4. Add .devwork/ to global gitignore"
     echo ""
 

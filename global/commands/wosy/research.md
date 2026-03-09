@@ -21,6 +21,33 @@ Explore the codebase to understand patterns, conventions, and related code befor
 
 ### Step 2: Explore Codebase
 
+### Step 2a: Parallel Research (Optional)
+
+If the task touches 3+ independent subsystems:
+
+> This task spans multiple areas. Parallel research available:
+> 1. {domain 1} — {investigation focus}
+> 2. {domain 2} — {investigation focus}
+> 3. {domain 3} — {investigation focus}
+>
+> Dispatch parallel Explore agents? (y/n)
+
+**If yes** — dispatch one Agent (subagent_type: "Explore") per domain:
+
+Each agent prompt:
+- Task context from status.md
+- Specific domain to investigate
+- Output format: Files to Modify table, Patterns Found, Dependencies, Risks
+- Read constitution.md for project conventions
+
+All agents run with `run_in_background: true`.
+
+**After all agents return:**
+1. Merge outputs into single `research.md` using standard template
+2. De-duplicate overlapping findings
+3. Flag conflicts between agent findings
+4. Add `## Research Method: Parallel ({N} agents)` header
+
 ### Hard Rules
 
 1. **Reference-first**: Before designing anything, find an existing implementation in this codebase that does something similar. If none exists, state that explicitly.

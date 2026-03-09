@@ -328,6 +328,38 @@ ls Makefile Taskfile.yml justfile 2>/dev/null
 
 ---
 
+### Task: Integrations (All Stacks)
+
+**Auto-detect from environment:**
+```bash
+# Code hosting (from git remote)
+git remote get-url origin 2>/dev/null | rg -o "(github|gitlab|bitbucket|azure)" || echo "unknown"
+
+# Ticket system CLIs (check PATH)
+which jira 2>/dev/null && echo "JIRA_CLI: $(which jira)"
+which linear 2>/dev/null && echo "LINEAR_CLI: $(which linear)"
+ls ~/bin/bb-comments 2>/dev/null && echo "BB_COMMENTS: ~/bin/bb-comments"
+ls ~/bin/jira-cli 2>/dev/null && echo "JIRA_CUSTOM: ~/bin/jira-cli"
+```
+
+**Ask user to confirm/complete:**
+
+> Detected integrations:
+> - Code hosting: {detected from git remote}
+> - PR review CLI: {detected or "none"}
+> - Ticket system: {detected or "none"}
+>
+> Confirm or add missing tools:
+> 1. Ticket system CLI (Jira, Linear, etc.) — path?
+> 2. PR review CLI (bb-comments, gh, etc.) — path?
+> 3. Any other project CLIs?
+>
+> Where should integration config live?
+> - **Global** (~/.claude/CLAUDE.md) — same tools across all projects
+> - **Local** (project CLAUDE.md) — project-specific tools
+
+---
+
 ### Task: Infrastructure (All Stacks)
 ```bash
 # Docker
@@ -679,6 +711,17 @@ Output: `.devwork/constitution.md`
 
 ---
 
+## Integrations
+
+| Integration | Tool | Path/Command | Scope |
+|-------------|------|-------------|-------|
+| Code hosting | {Bitbucket/GitHub/GitLab} | {git remote} | auto-detected |
+| Ticket system | {Jira/Linear/None} | {path} | {global/local} |
+| PR review | {bb-comments/gh/None} | {path} | {global/local} |
+| {custom} | {tool} | {path} | {global/local} |
+
+---
+
 ## Agent Skills
 
 Based on detected stack:
@@ -754,3 +797,6 @@ Constitution auto-referenced by:
   ├── Generates constitution from Phase 0 context + detected patterns
   └── On future `/constitution update`: enriches with real code patterns
 ```
+
+### Integration Updates
+On `update` / `rebuild`: Re-detect integrations, preserve user-added entries, ask about new detections only.

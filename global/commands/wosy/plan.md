@@ -193,6 +193,43 @@ Create `.devwork/{type}/{task-id}/plan.md`:
 - Tasks: `.devwork/{type}/{task-id}/tasks.md`
 ```
 
+### Step 3b: T-Shirt Sizing
+
+**Prerequisite**: research.md must exist. Sizing without codebase knowledge is guessing.
+
+Score each factor using signals from research.md:
+
+| Factor | Signal Source (from research.md) | XS | S | M | L | XL |
+|--------|--------------------------------|----|----|----|----|-----|
+| **Effort** | "Will Modify" table → file count | 1 file | 1-3 files | 4-10 files | 10-25 files | 25+ files |
+| **Complexity** | "Dependencies" section → coupling | Zero deps | Single domain, existing patterns | Some cross-file deps, parallelizable | Cross-domain (BE+FE+infra), tight coupling | Architecture-level, new patterns everywhere |
+| **Risk** | "Risks" + "Questions for /spec" | None — trivial change | Low — existing reference found | Mixed — some new patterns needed | High — unknowns, third-party deps | Very high — no reference, open questions remain |
+
+**Sizing rule**: The HIGHEST factor score wins. A task with S effort but L risk = L.
+
+| Size | What it means | Execution |
+|------|--------------|-----------|
+| **XS** | Trivial — typo, config tweak, single-line fix | Skip dispatch. Just do it. No tasks.md needed. |
+| **S** | Small — clear scope, existing patterns, 1-3 files | Manual — work through tasks.md checkboxes |
+| **M** | Medium — multi-file, some parallelizable work | `/wosy:dispatch` — wosy orchestrates sub-agents |
+| **L** | Large — cross-domain, tight deps, needs review loops | `/wosy:dispatch` + thorough review via `/verify` |
+| **XL** | Too big — must split into smaller tickets OR escalate | Split first. If unsplittable → `superpowers:subagent-driven-development` |
+
+Output sizing to user:
+
+> **T-Shirt Size: {XS/S/M/L/XL}**
+> Effort: {score} — {N files in Will Modify}
+> Complexity: {score} — {signal from Dependencies}
+> Risk: {score} — {signal from Risks/Questions}
+>
+> Recommended execution: {strategy}
+> {If XL}: ⚠ This task should be split. Suggest ticket breakdown:
+> - Ticket A: {scope}
+> - Ticket B: {scope}
+> {If unsplittable XL}: Escalate to `superpowers:subagent-driven-development`
+
+Write sizing result to `tasks.md` header.
+
 ### Step 4: Generate Task Checklist
 
 Create `.devwork/{type}/{task-id}/tasks.md`:
@@ -244,7 +281,44 @@ Create `.devwork/{type}/{task-id}/tasks.md`:
 **Started**: {YYYY-MM-DD}
 **Current Phase**: 1
 **Blocked**: No
+
+---
+
+## T-Shirt Size: {XS/S/M/L/XL}
+Effort: {score} | Complexity: {score} | Risk: {score}
+Execution: {Manual / wosy:dispatch / dispatch+review / split+superpowers}
+
+## Dependency Graph
+
+Phase 1: {name}
+  task-1 → (no deps)
+  task-2 → (no deps)
+  task-3 → depends-on: [task-1]
+  -- gate: {criteria} --
+
+Parallelizable sets:
+- Set A: [task-1, task-2] — no mutual deps
+- Set B: [task-4, task-5] — after Phase 1 gate
+
+## Task Details
+
+### Task 1: {Name}
+- scope: {file paths}
+- blockedBy: []
+- status: pending
+
+**Context:** {where this fits, what depends on it}
+
+**Steps:**
+1. {specific action}
+2. {specific action}
+3. {verification with expected output}
+
+**Pass criteria:** {measurable outcome}
+**Commit:** `{conventional commit message}`
 ```
+
+> **Note:** Only generate the extended template sections (Dependency Graph, Task Details) when T-Shirt Size = M or higher. For XS and S, the phase checklists and Progress section above are sufficient.
 
 ### Step 5: Update Status
 

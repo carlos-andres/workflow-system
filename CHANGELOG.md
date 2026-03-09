@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-03-09
+
+### Added
+
+- **`/dispatch`** — Wosy's own task orchestrator
+  - Dispatches parallel sub-agents for M/L-sized tasks from tasks.md dependency graph
+  - Validates sizing before dispatch (refuses XS/S/XL)
+  - Merges results, updates tasks.md checkboxes, never auto-commits
+
+- **T-Shirt Sizing in `/plan`** — Effort + complexity + risk scoring
+  - XS→XL based on file count, coupling, unknowns from research.md
+  - Determines execution strategy: manual, dispatch, or superpowers escalation
+  - Extended tasks.md template with dependency graph for M+ tasks
+
+- **Parallel Research mode in `/research`** — Step 2a
+  - When task touches 3+ subsystems, offers parallel Explore agent dispatch
+  - Merges agent findings, de-duplicates, flags conflicts
+
+- **Integrations detection in `/constitution`** — Phase 2 task
+  - Auto-detects code hosting (git remote), ticket CLIs (jira, linear), PR CLIs
+  - User confirms/completes, chooses global vs local scope
+  - New `## Integrations` section in constitution template
+
+### Changed
+
+- `project-init.md` template includes Integrations + Orchestration sections
+- `pr-review.md` reads PR CLI from constitution integrations (Step 0)
+- `global/CLAUDE.md` updated command routing with orchestration rule + integrations
+- Workflow commands table now includes `/wosy:dispatch` (16 commands total)
+- `install.sh` updated to include dispatch.md
+
+---
+
 ## [1.2.0] - 2026-03-09
 
 ### Added
