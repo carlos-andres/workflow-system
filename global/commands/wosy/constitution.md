@@ -114,7 +114,7 @@ echo "Dart: $(fd -e dart -t f | wc -l)"
 | Detected | Stack Profile | Detection Tasks to Run |
 |----------|--------------|----------------------|
 | `XCODE` or `SWIFT_SPM` | Apple (Swift/SwiftUI/UIKit) | Apple + Quality + Infra + Architecture |
-| `PHP` + `composer.json` | PHP/Laravel | PHP + Frontend + Quality + Infra + Services + Architecture |
+| `PHP` + `composer.json` | PHP (detect framework: Laravel/Symfony/Slim/CakePHP/vanilla) | PHP + Frontend + Quality + Infra + Services + Architecture |
 | `NODE` only | Node/Web | Node + Frontend + Quality + Infra + Services + Architecture |
 | `PYTHON` | Python | Python + Quality + Infra + Architecture |
 | `RUST` | Rust | Rust + Quality + Infra + Architecture |
@@ -178,44 +178,77 @@ rg "import Combine|@Published|@Observable|async func|await " -l | head -10
 
 ---
 
-### Task: PHP/Laravel Stack
+### Task: PHP Stack
 ```bash
-# PHP/Laravel
-jq -r '{php: .require.php, laravel: .require["laravel/framework"], packages: [.require | keys[] | select(startswith("spatie/") or startswith("laravel/"))]}' composer.json
+# Step 1: Detect PHP framework from composer.json
+echo "=== PHP Framework Detection ==="
+jq -r '.require["laravel/framework"] // empty' composer.json 2>/dev/null && echo "→ LARAVEL"
+jq -r '.require["symfony/framework-bundle"] // empty' composer.json 2>/dev/null && echo "→ SYMFONY"
+jq -r '.require["slim/slim"] // empty' composer.json 2>/dev/null && echo "→ SLIM"
+jq -r '.require["cakephp/cakephp"] // empty' composer.json 2>/dev/null && echo "→ CAKEPHP"
+# If none matched → vanilla PHP
+
+# Step 2: PHP version and all dependencies
+jq -r '{php: .require.php, deps: [.require | keys[]], devDeps: [."require-dev" | keys[]]}' composer.json
+
+# Step 3: Quality tools (framework-agnostic)
 fd -t f -d 1 "phpunit.xml|pest.php" .
 fd -t f -d 1 "pint.json|phpstan.neon|.php-cs-fixer.php|psalm.xml|rector.php" .
 
-# Architecture
-fd -t d -d 1 . app/ | sort
-fd -t d -d 1 "Services|Repositories|Actions|DTOs|Enums|Contracts|Interfaces|Observers|Policies|Events|Jobs|Listeners|ValueObjects|Aggregates|Commands|Queries|Handlers" app/
-fd -t d -d 1 "Domain|Modules|Bounded|Core|Infrastructure|Application|Presentation" app/ src/
-fd -t d -d 1 "Nova|Filament|Backpack" app/
-fd -t d -d 2 "Api|API|V1|V2" app/Http/Controllers/
+# Step 4: Architecture detection (adapt paths to framework)
+# Laravel uses app/, Symfony uses src/, others vary
+for dir in app/ src/ lib/; do
+  [ -d "$dir" ] && echo "=== Scanning $dir ===" && fd -t d -d 1 . "$dir" | sort
+done
 
-# Count patterns
-echo "Services: $(fd -t f . app/Services 2>/dev/null | wc -l)"
-echo "Repositories: $(fd -t f . app/Repositories 2>/dev/null | wc -l)"
-echo "Actions: $(fd -t f . app/Actions 2>/dev/null | wc -l)"
-echo "Events: $(fd -t f . app/Events 2>/dev/null | wc -l)"
-echo "Jobs: $(fd -t f . app/Jobs 2>/dev/null | wc -l)"
+# Common architecture directories (framework-agnostic)
+fd -t d -d 2 "Services|Repositories|Actions|DTOs|Enums|Contracts|Interfaces|Events|Jobs|Listeners|ValueObjects|Handlers|Commands|Queries" app/ src/ 2>/dev/null
+fd -t d -d 2 "Domain|Modules|Bounded|Core|Infrastructure|Application|Presentation" app/ src/ 2>/dev/null
 
-# External services
-fd -t f . config/ -d 1 -x basename {} .php | rg -w "stripe|cashier|sentry|bugsnag|horizon|telescope|scout|broadcasting|sanctum|passport|fortify|jetstream"
-jq -r '.require | keys[]' composer.json | rg -w "stripe|sentry|bugsnag|aws|algolia|meilisearch|pusher"
+# Laravel-specific (only if Laravel detected)
+# fd -t d -d 1 "Nova|Filament|Backpack" app/
+# fd -t d -d 2 "Api|API|V1|V2" app/Http/Controllers/
+
+# Symfony-specific (only if Symfony detected)
+# fd -t f "services.yaml|services.xml" config/ 2>/dev/null
+# fd -t d -d 1 "Bundle|Entity|Repository|Controller|Form|Command" src/ 2>/dev/null
+
+# Slim-specific (only if Slim detected)
+# fd -t f "routes.php|middleware.php" -d 2 2>/dev/null
+# fd -t d -d 1 "Action|Middleware|Domain" src/ app/ 2>/dev/null
+
+# Step 5: Count patterns (use detected source dir)
+SRC_DIR=$([ -d "app/" ] && echo "app" || echo "src")
+echo "Services: $(fd -t f . $SRC_DIR/Services 2>/dev/null | wc -l)"
+echo "Repositories: $(fd -t f . $SRC_DIR/Repositories 2>/dev/null | wc -l)"
+echo "Actions: $(fd -t f . $SRC_DIR/Actions 2>/dev/null | wc -l)"
+echo "Events: $(fd -t f . $SRC_DIR/Events 2>/dev/null | wc -l)"
+echo "Jobs: $(fd -t f . $SRC_DIR/Jobs 2>/dev/null | wc -l)"
+
+# Step 6: External services — dynamic from composer.json dependencies
+echo "=== External Services (from composer.json) ==="
+jq -r '(.require // {}) + (."require-dev" // {}) | keys[] | select(contains("/"))' composer.json | \
+  rg -v "^(php|ext-|lib-|laravel/framework|symfony/framework)" | sort
+# Also check config files if they exist
+fd -t f -d 1 . config/ 2>/dev/null | sort
 ```
 
-**Laravel Architecture Classification:**
+**Uncomment the framework-specific blocks above based on Step 1 detection results.**
 
-| Pattern | Indicators |
-|---------|------------|
-| **Monolith (standard)** | Flat `app/` with Controllers, Models only |
-| **Service Layer** | `app/Services/` with business logic |
-| **Repository Pattern** | `app/Repositories/` + Interfaces |
-| **Action Pattern** | `app/Actions/` single-purpose classes |
-| **DDD/Hexagonal** | `Domain/`, `Infrastructure/`, `Application/` dirs |
-| **Modular** | `app/Modules/` or `src/` with bounded contexts |
-| **CQRS** | Separate `Commands/` and `Queries/` dirs |
-| **Event-Driven** | Heavy use of `Events/`, `Listeners/`, `Jobs/` |
+**PHP Architecture Classification:**
+
+| Pattern | Indicators | Frameworks |
+|---------|------------|------------|
+| **Monolith (standard)** | Flat source dir with Controllers, Models only | Any |
+| **Service Layer** | `Services/` with business logic | Any |
+| **Repository Pattern** | `Repositories/` + Interfaces/Contracts | Any |
+| **Action Pattern** | `Actions/` single-purpose classes | Laravel, Slim |
+| **DDD/Hexagonal** | `Domain/`, `Infrastructure/`, `Application/` dirs | Any |
+| **Modular** | `Modules/` or bounded contexts in `src/` | Any |
+| **CQRS** | Separate `Commands/` and `Queries/` dirs | Any |
+| **Event-Driven** | Heavy use of `Events/`, `Listeners/`, `Jobs/` | Laravel, Symfony |
+| **Bundle Architecture** | `*Bundle/` dirs, services.yaml | Symfony |
+| **ADR (Action-Domain-Responder)** | `Action/`, `Domain/`, `Responder/` | Slim |
 
 ---
 

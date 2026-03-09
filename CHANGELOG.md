@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `constitution.md` expanded PHP detection beyond Laravel (Symfony, Slim, CakePHP, vanilla), dynamic architecture scanning (`app/`/`src/`/`lib/`), and `jq`-based external service detection
+- `deliver.md` added debug pattern detection table for 9 stacks (PHP, JS/TS, Swift, Python, Rust, Go, Ruby, Java/Kotlin, Dart)
+- `project-init.md` added Example 2 (Next.js SaaS) and Example 3 (Swift/iOS), renumbered CLI example to 4
 - CLAUDE.md updated with command routing section
 - CLAUDE.md updated with CARL Integration block
 - CLI tool preferences expanded: sd, zoxide, glow, htop, btm, procs, dust, ncdu, httpie, tokei, hyperfine, zellij/tmux, direnv

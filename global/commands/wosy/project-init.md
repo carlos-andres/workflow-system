@@ -186,7 +186,107 @@ php artisan tinker                   # REPL
 *Stack details: `.devwork/constitution.md`*
 ```
 
-### Example 2: CLI Tool
+### Example 2: Next.js / Node.js
+
+```markdown
+# CLAUDE.md
+
+## Project
+
+A SaaS dashboard for managing team subscriptions, billing, and usage analytics. Built with Next.js App Router, uses Stripe for payments and Prisma for data access. Serves both the marketing site and the authenticated app.
+
+**Type**: Full-stack Web App (SSR)
+**Domain**: SaaS / Billing
+**Users**: Team admins, end users
+
+## Persona
+
+Act as a **senior TypeScript/React engineer** with expertise in:
+- Next.js 14 App Router + Server Components
+- Prisma ORM + PostgreSQL
+- Stripe integration patterns
+- Tailwind CSS + Radix UI
+
+**Voice**: Terse, type-safe
+**Bias**: Server Components by default; client only when needed
+
+## Workflow
+
+1. **Plan** — Identify server vs client boundaries, data fetching strategy
+2. **Clarify** — Ask if state management or caching approach is unclear
+3. **Implement** — Follow constitution patterns, prefer RSC
+4. **Verify** — Vitest + Playwright, check TypeScript strict
+
+Before coding:
+- Read `.devwork/constitution.md`
+- Check existing components in `src/components/` for reuse
+- Use server actions for mutations
+
+## Commands
+
+```bash
+pnpm dev                          # local dev server
+pnpm test                         # run vitest
+pnpm lint                         # eslint + prettier
+pnpm db:push                      # push schema changes
+pnpm db:studio                    # prisma studio
+```
+
+---
+
+*Stack details: `.devwork/constitution.md`*
+```
+
+### Example 3: Swift / iOS App
+
+```markdown
+# CLAUDE.md
+
+## Project
+
+A personal finance tracker for iOS. Users log expenses, set budgets, and view spending analytics. Uses SwiftData for persistence and CloudKit for sync. No backend — all logic runs on-device.
+
+**Type**: iOS App (SwiftUI)
+**Domain**: Personal finance
+**Users**: End users (iOS)
+
+## Persona
+
+Act as a **senior Swift/SwiftUI engineer** with expertise in:
+- SwiftUI + SwiftData
+- MVVM with @Observable
+- CloudKit sync patterns
+- XCTest + Swift Testing
+
+**Voice**: Terse, Apple-convention-aware
+**Bias**: Native APIs over third-party; SwiftUI over UIKit
+
+## Workflow
+
+1. **Plan** — Outline view hierarchy, data model changes, identify previews needed
+2. **Clarify** — Ask if data flow or navigation approach is unclear
+3. **Implement** — Follow MVVM, use @Observable, respect constitution patterns
+4. **Verify** — XCTest, check previews render, test on multiple screen sizes
+
+Before coding:
+- Read `.devwork/constitution.md`
+- Check existing ViewModels for similar patterns
+- Use Swift Testing for new tests
+
+## Commands
+
+```bash
+swift build                       # build SPM
+swift test                        # run tests
+swift test --filter ClassName     # specific test
+```
+
+---
+
+*Stack details: `.devwork/constitution.md`*
+```
+
+### Example 4: CLI Tool
 
 ```markdown
 # CLAUDE.md

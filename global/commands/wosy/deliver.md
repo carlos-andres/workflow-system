@@ -36,9 +36,27 @@ Ask me to confirm each:
 
 ### Code Quality
 - [ ] Linting/formatting passes (use detected tools)
-- [ ] No debug code left (search for common debug patterns per stack)
+- [ ] No debug code left (search using debug pattern table below)
 - [ ] No commented-out code
 - [ ] Follows project conventions (constitution.md)
+
+#### Debug Pattern Detection
+
+Read stack from `constitution.md` → use matching patterns. If no constitution, detect from manifests. If unknown, search ALL.
+
+| Stack | Debug Patterns to Search |
+|-------|-------------------------|
+| PHP | `dd(`, `var_dump(`, `dump(`, `ray(`, `Log::debug` |
+| JS/TS | `console.log`, `console.debug`, `debugger`, `alert(` |
+| Swift | `print(`, `debugPrint(`, `dump(`, `#if DEBUG` |
+| Python | `print(`, `pdb.set_trace()`, `breakpoint()`, `logging.debug` |
+| Rust | `dbg!`, `println!`, `eprintln!` |
+| Go | `fmt.Println`, `log.Println`, `spew.Dump` |
+| Ruby | `puts `, `pp `, `binding.pry`, `byebug`, `debugger` |
+| Java/Kotlin | `System.out.print`, `println(`, `Log.d(` |
+| Dart | `print(`, `debugPrint(`, `log(` |
+
+**Usage**: `rg "{pattern}" {changed_files}` — only scan files in the current changeset.
 
 ### Testing
 - [ ] Relevant tests pass (use detected test runner)
