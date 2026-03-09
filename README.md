@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.1.0-blue?style=flat-square" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-1.2.0-blue?style=flat-square" alt="Version"/>
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"/>
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="PRs Welcome"/>
 </p>
@@ -42,7 +42,7 @@ A **structured workflow system** that brings order to AI-assisted development:
 /phase0 → /constitution → /intake → /research → /spec → /plan → implement → /verify → /deliver → /graduate → /archive
 ```
 
-One command to set up. Thirteen commands to master. Zero chaos.
+One command to set up. Fourteen commands to master. Zero chaos.
 
 ---
 
@@ -156,6 +156,7 @@ Graduate important work with `/graduate`. Keep your knowledge, clean your repos.
 | `/phase0` | Greenfield discovery — idea to structured docs |
 | `/constitution` | **The only setup command you need** |
 | `/project-init` | Generate project CLAUDE.md |
+| `/pr-review` | Code review from diff |
 
 ### Workflow
 
@@ -171,6 +172,7 @@ Graduate important work with `/graduate`. Keep your knowledge, clean your repos.
 | `/deliver` | Ship | Pre-commit checklist, generate message |
 | `/graduate` | Preserve | Promote artifacts to shareable location |
 | `/archive` | Cleanup | Archive completed workspaces |
+| `/pr-review` | Review | Code review from commit or branch diff |
 
 ### Work Modes
 
@@ -191,6 +193,21 @@ Cross-cutting:
   /status  — update progress in any mode
   /verify  — checkpoint before /deliver in any mode
 ```
+
+---
+
+## Namespaced Commands (wosy:)
+
+All workflow commands are also available with the `wosy:` namespace prefix for coexistence with other plugin systems:
+
+```
+/wosy:intake     # Same as /intake
+/wosy:plan       # Same as /plan
+/wosy:deliver    # Same as /deliver
+# ... etc for all 14 commands
+```
+
+The `wosy/` subfolder in `~/.claude/commands/` contains the canonical copies. The flat files serve as aliases for convenience.
 
 ---
 
@@ -248,7 +265,10 @@ chmod +x install.sh
     ├── verify.md          # Phase validation
     ├── deliver.md         # Commit preparation
     ├── graduate.md        # Artifact promotion
-    └── archive.md         # Workspace cleanup
+    ├── pr-review.md          # Code review from diff
+    ├── archive.md         # Workspace cleanup
+    └── wosy/              # Namespaced canonical copies
+        ├── (all 14 commands)
 ```
 
 ### Manual Installation

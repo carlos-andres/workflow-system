@@ -31,6 +31,16 @@ Consider:
 - Testing strategy
 - Risks and mitigations
 
+### Step 2b: Codebase Verification Checkpoint
+
+Before writing the plan, confirm:
+
+1. [ ] Every file in research.md `Will Modify` still exists and hasn't changed since research
+2. [ ] The pattern from `Verified References` is still the right fit
+3. [ ] No new unknowns since research
+
+If any check fails, re-run `/wosy:research` on the affected area. This is a hard gate.
+
 ### Step 3: Create Implementation Plan
 
 Create `.devwork/{type}/{task-id}/plan.md`:
@@ -86,24 +96,36 @@ Create `.devwork/{type}/{task-id}/plan.md`:
 ## Implementation Phases
 
 ### Phase 1: {Name} (e.g., "Database & Models")
-- {Task 1}
-- {Task 2}
-- **Checkpoint**: {How to verify phase is complete}
+| Task | Pass Criteria | Verified By |
+|------|--------------|-------------|
+| {Task 1} | {measurable outcome} | {test / command / manual} |
+| {Task 2} | {measurable outcome} | {test / command / manual} |
+
+**Gate**: {What must be true before Phase 2}
 
 ### Phase 2: {Name} (e.g., "Business Logic")
-- {Task 1}
-- {Task 2}
-- **Checkpoint**: {How to verify phase is complete}
+| Task | Pass Criteria | Verified By |
+|------|--------------|-------------|
+| {Task 1} | {measurable outcome} | {test / command / manual} |
+| {Task 2} | {measurable outcome} | {test / command / manual} |
+
+**Gate**: {What must be true before Phase 3}
 
 ### Phase 3: {Name} (e.g., "API/Controller")
-- {Task 1}
-- {Task 2}
-- **Checkpoint**: {How to verify phase is complete}
+| Task | Pass Criteria | Verified By |
+|------|--------------|-------------|
+| {Task 1} | {measurable outcome} | {test / command / manual} |
+| {Task 2} | {measurable outcome} | {test / command / manual} |
+
+**Gate**: {What must be true before Phase 4}
 
 ### Phase 4: {Name} (e.g., "Testing")
-- {Task 1}
-- {Task 2}
-- **Checkpoint**: {How to verify phase is complete}
+| Task | Pass Criteria | Verified By |
+|------|--------------|-------------|
+| {Task 1} | {measurable outcome} | {test / command / manual} |
+| {Task 2} | {measurable outcome} | {test / command / manual} |
+
+**Gate**: {What must be true before delivery}
 
 ---
 
@@ -184,28 +206,28 @@ Create `.devwork/{type}/{task-id}/tasks.md`:
 
 ## Phase 1: {Name}
 
-- [ ] {Task 1}
-- [ ] {Task 2}
-- [ ] {Task 3}
+- [ ] {Task 1} → **pass**: {criteria}
+- [ ] {Task 2} → **pass**: {criteria}
+- [ ] {Task 3} → **pass**: {criteria}
 - [ ] **Checkpoint**: {verification step}
 
 ## Phase 2: {Name}
 
-- [ ] {Task 1}
-- [ ] {Task 2}
+- [ ] {Task 1} → **pass**: {criteria}
+- [ ] {Task 2} → **pass**: {criteria}
 - [ ] **Checkpoint**: {verification step}
 
 ## Phase 3: {Name}
 
-- [ ] {Task 1}
-- [ ] {Task 2}
+- [ ] {Task 1} → **pass**: {criteria}
+- [ ] {Task 2} → **pass**: {criteria}
 - [ ] **Checkpoint**: {verification step}
 
 ## Phase 4: Testing
 
-- [ ] Write unit tests for {component}
-- [ ] Write feature tests for {flow}
-- [ ] Run full test suite
+- [ ] Write unit tests for {component} → **pass**: {criteria}
+- [ ] Write feature tests for {flow} → **pass**: {criteria}
+- [ ] Run full test suite → **pass**: all tests green
 - [ ] **Checkpoint**: All tests pass
 
 ## Final

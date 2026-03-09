@@ -19,6 +19,8 @@ Validate completion of current phase before proceeding. Not a gate — user can 
 - [ ] Key patterns/conventions documented
 - [ ] Relevant files/modules identified
 - [ ] Dependencies and constraints noted
+- [ ] Verified References table is populated (no empty rows)
+- [ ] All intake Unknowns addressed (resolved or forwarded to /spec)
 
 ### After /spec
 - [ ] `spec.md` exists and is non-empty
@@ -30,6 +32,8 @@ Validate completion of current phase before proceeding. Not a gate — user can 
 - [ ] `plan.md` exists with phases/approach
 - [ ] `tasks.md` exists with checkboxes
 - [ ] Tasks are ordered and scoped
+- [ ] Every task has pass criteria (no bare checkboxes)
+- [ ] Codebase verification checkpoint completed (Step 2b)
 
 ### Before /deliver
 - [ ] All tasks in tasks.md marked done (or explicitly deferred)

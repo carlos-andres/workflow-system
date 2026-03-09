@@ -28,6 +28,8 @@ The installer will:
 3. Install workflow commands in `~/.claude/commands/`
 4. Add `.devwork/` to global gitignore
 
+Commands are also available as `/wosy:command` for disambiguation with other plugins.
+
 ### Manual Install (if preferred)
 
 1. Copy `global/CLAUDE.md` to `~/.claude/CLAUDE.md`
@@ -121,6 +123,7 @@ Then creates workspace in `.devwork/feature/tasks-1400/` or `.devwork/hotfix/tas
 | `/status` | After progress | Updates `status.md` |
 | `/status check` | View status only | Console output |
 | `/deliver` | Task complete | Commit message + graduation prompt |
+| `/pr-review` | After commit/branch | `.devwork/reviews/{ticket}-code-review.md` |
 | `/graduate` | Preserve important work | Moves to `specs/` or `decisions/` |
 
 ### Constitution Flags
@@ -147,7 +150,9 @@ Then creates workspace in `.devwork/feature/tasks-1400/` or `.devwork/hotfix/tas
     ├── spec.md         # /spec
     ├── plan.md         # /plan
     ├── status.md       # /status
-    └── deliver.md      # /deliver
+    ├── deliver.md      # /deliver
+    ├── pr-review.md    # /pr-review
+    └── wosy/            # Namespaced copies (14 commands)
 ```
 
 ### Per Project

@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-03-09
+
+### Added
+
+- **`/pr-review`** - Code review from commit or branch diff
+  - Three-pass review: correctness, performance, constitution compliance
+  - Confidence-based filtering (HIGH/MEDIUM/LOW)
+  - Structured report output to `.devwork/reviews/`
+
+- **`wosy:` namespace** - All 14 commands available as `/wosy:command`
+  - Coexists with superpowers plugin without ambiguity
+  - Flat files kept as aliases (`/plan` still works)
+  - `~/.claude/commands/wosy/` subfolder with canonical copies
+
+### Changed
+
+- CLAUDE.md updated with command routing section
+- CLAUDE.md updated with CARL Integration block
+- CLI tool preferences expanded: sd, zoxide, glow, htop, btm, procs, dust, ncdu, httpie, tokei, hyperfine, zellij/tmux, direnv
+- Constitution Flags section added to installed CLAUDE.md
+- install.sh updated to install `wosy/` subfolder
+- README command count updated: 13 → 14
+
+---
+
 ## [1.1.0] - 2026-02-09
 
 ### Added

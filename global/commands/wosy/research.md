@@ -21,6 +21,13 @@ Explore the codebase to understand patterns, conventions, and related code befor
 
 ### Step 2: Explore Codebase
 
+### Hard Rules
+
+1. **Reference-first**: Before designing anything, find an existing implementation in this codebase that does something similar. If none exists, state that explicitly.
+2. **Verify, don't assume**: Every claim in research.md must link to a file path and line range. No "the codebase probably uses X."
+3. **No phantom patterns**: Only document patterns you found with `rg`/`fd` and read with your own eyes. Never infer a pattern from file names alone.
+4. **Unknowns from intake**: Address every item in status.md `Unknowns` list. Each must become either a finding or a question for `/wosy:spec`.
+
 Using `rg` (ripgrep) and `fd`, search for:
 
 1. **Similar functionality**
@@ -77,6 +84,14 @@ Update `.devwork/{type}/{task-id}/research.md`:
 // Example from {test file}
 {code snippet showing test pattern}
 ```
+
+## Verified References
+
+| What I Need to Build | Existing Reference | File:Line |
+|-----------------------|-------------------|-----------|
+| {component/pattern}   | {similar impl found} | `{path}:{line}` |
+
+> If no reference exists for a component, state: "No existing reference — new pattern."
 
 ## Conventions Detected
 
@@ -142,6 +157,9 @@ Key findings:
 - Files to modify: {count}
 - Existing tests: {yes/no}
 - Risks: {brief list}
+
+Unknowns resolved: {count} / {total from intake}
+Unresolved → forwarded to /wosy:spec
 
 Next: /spec (if requirements unclear) or /plan (if ready)
 ```

@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #===============================================================================
-# Claude Code Workflow System - Installer v1.1.0
+# Claude Code Workflow System - Installer v1.2.0
 #===============================================================================
 #
 # This script installs the complete workflow system for Claude Code:
 # - Cleans ALL existing custom commands (fresh start)
 # - Installs new CLAUDE.md with workflow awareness
-# - Installs all slash commands (13 total)
+# - Installs all slash commands (15 total, wosy/ namespace)
 # - Adds .devwork/ to global gitignore
 #
 # Usage: ./install.sh
@@ -135,17 +135,22 @@ install_commands() {
         "deliver"
         "graduate"
         "archive"
+        "pr-review"
+        "rebuild"
     )
 
+    # Install wosy/ namespace (single source of truth)
+    print_step "Installing wosy/ namespace..."
+    mkdir -p "$COMMANDS_DIR/wosy"
     for cmd in "${commands[@]}"; do
-        print_step "Installing /$cmd..."
-        if [ -f "$SOURCE_DIR/commands/$cmd.md" ]; then
-            cp "$SOURCE_DIR/commands/$cmd.md" "$COMMANDS_DIR/$cmd.md"
-            print_success "Installed /$cmd"
+        if [ -f "$SOURCE_DIR/commands/wosy/$cmd.md" ]; then
+            cp "$SOURCE_DIR/commands/wosy/$cmd.md" "$COMMANDS_DIR/wosy/$cmd.md"
+            print_success "Installed /wosy:$cmd"
         else
-            print_error "Source file not found: $SOURCE_DIR/commands/$cmd.md"
+            print_error "Source file not found: $SOURCE_DIR/commands/wosy/$cmd.md"
         fi
     done
+    print_success "Installed ${#commands[@]} commands in wosy/ namespace"
 }
 
 #-------------------------------------------------------------------------------
@@ -194,12 +199,12 @@ verify_installation() {
     fi
 
     # Check commands
-    local commands=("phase0" "constitution" "project-init" "intake" "research" "spec" "plan" "status" "context" "verify" "deliver" "graduate" "archive")
+    local commands=("phase0" "constitution" "project-init" "intake" "research" "spec" "plan" "status" "context" "verify" "deliver" "graduate" "archive" "pr-review" "rebuild")
     for cmd in "${commands[@]}"; do
-        if [ -f "$COMMANDS_DIR/$cmd.md" ]; then
-            print_success "/$cmd command installed"
+        if [ -f "$COMMANDS_DIR/wosy/$cmd.md" ]; then
+            print_success "/wosy:$cmd command installed"
         else
-            print_error "/$cmd command missing"
+            print_error "/wosy:$cmd command missing"
             ((errors++))
         fi
     done
@@ -225,60 +230,64 @@ print_summary() {
     echo -e "Installed to: ${GREEN}$CLAUDE_DIR${NC}"
     echo ""
     echo "Files created:"
-    echo "  ~/.claude/CLAUDE.md                  # Global config"
-    echo "  ~/.claude/commands/phase0.md         # Greenfield discovery"
-    echo "  ~/.claude/commands/constitution.md   # Setup + AI guidelines"
-    echo "  ~/.claude/commands/project-init.md   # Project CLAUDE.md generator"
-    echo "  ~/.claude/commands/intake.md         # Task classification"
-    echo "  ~/.claude/commands/research.md       # Codebase exploration"
-    echo "  ~/.claude/commands/spec.md           # Requirements interview"
-    echo "  ~/.claude/commands/plan.md           # Implementation planning"
-    echo "  ~/.claude/commands/status.md         # Progress tracking"
-    echo "  ~/.claude/commands/context.md        # Context switch resume"
-    echo "  ~/.claude/commands/verify.md         # Phase validation"
-    echo "  ~/.claude/commands/deliver.md        # Commit preparation"
-    echo "  ~/.claude/commands/graduate.md       # Artifact promotion"
-    echo "  ~/.claude/commands/archive.md        # Workspace cleanup"
+    echo "  ~/.claude/CLAUDE.md                       # Global config"
+    echo "  ~/.claude/commands/wosy/phase0.md         # Greenfield discovery"
+    echo "  ~/.claude/commands/wosy/constitution.md   # Setup + AI guidelines"
+    echo "  ~/.claude/commands/wosy/project-init.md   # Project CLAUDE.md generator"
+    echo "  ~/.claude/commands/wosy/intake.md         # Task classification"
+    echo "  ~/.claude/commands/wosy/research.md       # Codebase exploration"
+    echo "  ~/.claude/commands/wosy/spec.md           # Requirements interview"
+    echo "  ~/.claude/commands/wosy/plan.md           # Implementation planning"
+    echo "  ~/.claude/commands/wosy/status.md         # Progress tracking"
+    echo "  ~/.claude/commands/wosy/context.md        # Context switch resume"
+    echo "  ~/.claude/commands/wosy/verify.md         # Phase validation"
+    echo "  ~/.claude/commands/wosy/deliver.md        # Commit preparation"
+    echo "  ~/.claude/commands/wosy/graduate.md       # Artifact promotion"
+    echo "  ~/.claude/commands/wosy/archive.md        # Workspace cleanup"
+    echo "  ~/.claude/commands/wosy/pr-review.md      # Code review from diff"
+    echo "  ~/.claude/commands/wosy/rebuild.md        # Re-detect stack + update config"
     echo ""
     echo -e "${YELLOW}Quick Start:${NC}"
     echo ""
     echo "  1. Open a project in Claude Code"
     echo ""
     echo "  2. Run the single setup command:"
-    echo "     /constitution"
+    echo "     /wosy:constitution"
     echo ""
     echo "  3. Start a new task:"
-    echo "     /intake AUTH-001 \"Add user authentication\""
+    echo "     /wosy:intake AUTH-001 \"Add user authentication\""
     echo ""
     echo "  4. Follow the workflow (pick your mode):"
     echo ""
     echo "     Deep Dive (greenfield):"
-    echo "       /phase0 → /constitution → /intake → /research → /spec → /plan → implement → /verify → /deliver"
+    echo "       /wosy:phase0 → /wosy:constitution → /wosy:intake → /wosy:research → /wosy:spec → /wosy:plan → implement → /wosy:verify → /wosy:deliver"
     echo ""
     echo "     Hybrid (existing codebase):"
-    echo "       /intake → /research → /plan → implement → /verify → /deliver"
+    echo "       /wosy:intake → /wosy:research → /wosy:plan → implement → /wosy:verify → /wosy:deliver"
     echo ""
     echo "     Straight (hotfix, clear scope):"
-    echo "       /intake → implement → /deliver"
+    echo "       /wosy:intake → implement → /wosy:deliver"
     echo ""
     echo -e "${BLUE}Commands:${NC}"
-    echo "  /phase0              - Greenfield project discovery"
-    echo "  /constitution        - Full project setup + AI coding guidelines"
-    echo "  /constitution update - Re-scan, preserve manual notes"
-    echo "  /constitution reset  - Fresh start (backs up existing)"
-    echo "  /constitution repair - Fix structure issues only"
-    echo "  /project-init        - Generate project CLAUDE.md"
+    echo "  /wosy:phase0              - Greenfield project discovery"
+    echo "  /wosy:constitution        - Full project setup + AI coding guidelines"
+    echo "  /wosy:constitution update - Re-scan, preserve manual notes"
+    echo "  /wosy:constitution reset  - Fresh start (backs up existing)"
+    echo "  /wosy:constitution repair - Fix structure issues only"
+    echo "  /wosy:project-init        - Generate project CLAUDE.md"
+    echo "  /wosy:rebuild             - Re-detect stack, update constitution + CLAUDE.md"
     echo ""
-    echo "  /intake        - Classify task, create workspace"
-    echo "  /research      - Explore codebase"
-    echo "  /spec          - Requirements interview"
-    echo "  /plan          - Implementation planning"
-    echo "  /status        - Update progress"
-    echo "  /context       - Resume after context switch"
-    echo "  /verify        - Validate phase completion"
-    echo "  /deliver       - Final check, commit message"
-    echo "  /graduate      - Promote artifacts to shareable location"
-    echo "  /archive       - Archive completed workspaces"
+    echo "  /wosy:intake        - Classify task, create workspace"
+    echo "  /wosy:research      - Explore codebase"
+    echo "  /wosy:spec          - Requirements interview"
+    echo "  /wosy:plan          - Implementation planning"
+    echo "  /wosy:status        - Update progress"
+    echo "  /wosy:context       - Resume after context switch"
+    echo "  /wosy:verify        - Validate phase completion"
+    echo "  /wosy:deliver       - Final check, commit message"
+    echo "  /wosy:graduate      - Promote artifacts to shareable location"
+    echo "  /wosy:archive       - Archive completed workspaces"
+    echo "  /wosy:pr-review     - Code review from commit or branch diff"
     echo ""
 
     if [ -f "$CLAUDE_DIR/CLAUDE.md.old" ]; then
@@ -291,12 +300,12 @@ print_summary() {
 #-------------------------------------------------------------------------------
 
 main() {
-    print_header "Claude Code Workflow System Installer v1.1.0"
+    print_header "Claude Code Workflow System Installer v1.2.0"
 
     echo "This will:"
     echo "  1. Clean ALL existing commands (fresh start)"
     echo "  2. Install enhanced CLAUDE.md"
-    echo "  3. Install 13 workflow commands"
+    echo "  3. Install 15 workflow commands (wosy/ namespace)"
     echo "  4. Add .devwork/ to global gitignore"
     echo ""
 

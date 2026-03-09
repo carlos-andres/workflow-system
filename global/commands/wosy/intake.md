@@ -58,6 +58,19 @@ If Feature or Refactor, ask:
 > 1. **Yes** - I know exactly what to build (skip /spec)
 > 2. **No** - Requirements need clarification (full workflow with /spec)
 
+### Step 4b: Define Intent
+
+Before proceeding, state explicitly:
+
+> **Goal**: What specific outcome does this task produce?
+> **Touches**: What part of the system is being changed? (e.g., "API auth layer", "checkout flow")
+> **Stack**: What stack/tools will this touch? (verify against constitution.md)
+
+**Anti-assumption rules:**
+- If the description is vague, challenge it. Ask "what does X mean in this codebase?"
+- Never infer architecture from the description alone — flag unknowns for `/wosy:research`
+- If the task touches code you haven't read, mark scope as **unclear** regardless of what the user said
+
 ### Step 5: Suggest Work Mode
 
 Based on classification and context:
@@ -100,6 +113,9 @@ Create initial status file:
 - **Created**: {YYYY-MM-DD}
 - **Scope Clear**: {yes|no}
 - **Work Mode**: {Deep Dive|Hybrid|Straight}
+- **Goal**: {one-line outcome}
+- **Touches**: {system area — from Step 4b}
+- **Unknowns**: {list anything not yet verified in code}
 
 ## Current State
 Just started. Workspace created.
