@@ -5,6 +5,78 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-03-15
+
+### Added
+
+- **`/work`** — Smart router + conductor entrypoint
+  - Auto-detects project state and suggests next command
+  - Reads task records and project memory before acting
+  - Enforces conductor pattern: main window orchestrates, agents implement
+
+- **`/work setup`** — Unified project setup (merges constitution + project-init + rebuild)
+  - Single command with flags: `update`, `reset`, `repair`
+  - Phase 6: proactive memory detection for tooling patterns
+  - Replaces 3 standalone commands with one
+
+- **`/work ship`** — Delivery pipeline with gates (merges verify + deliver + graduate + archive)
+  - Sequential: verify → deliver → graduate → archive
+  - User can bail at any gate
+  - Updates task records at each step
+
+- **Task Records** — Persistent clinical charts in `.devwork/tasks/`
+  - Max 30 lines per task record
+  - Auto-created by `/intake`, auto-updated by every wosy command
+  - Auto-numbering (001.md, 002.md) or custom IDs (AUTH-001.md)
+  - Read-first: `/work`, `/context`, `/dispatch` all read before acting
+  - Survives across sessions — no more reconstructing context
+
+- **Memory Wiring** — Proactive tooling persistence
+  - Detects DB connections, SSH patterns, CLI commands, API endpoints during `/research` and `/work setup`
+  - Prompts to save as operational instructions to Claude project memory
+  - Memory entries include: command, why this way, prerequisites, verify one-liner
+  - Next session reads memory automatically — no re-discovery
+
+- **Three-Layer Memory Model**
+  - Project memory (`~/.claude/projects/<project>/memory/`) — permanent tooling patterns
+  - Task records (`.devwork/tasks/*.md`) — per-task progress until archived
+  - Tasks API (in-session) — real-time orchestration
+
+- **Always-On Dispatch** — `/dispatch` scales XS→XL
+  - XS: single inline agent
+  - S: single agent with task record updates
+  - M: 2-3 parallel agents, conductor coordinates
+  - L: parallel agents + verification review
+  - XL: auto-split into sub-tasks, then dispatch each
+
+### Changed
+
+- Command count reduced: 16 → 10 visible commands
+- `/intake` now creates task records in `.devwork/tasks/` alongside workspace
+- `/status` reads/writes task records alongside status.md
+- `/context` reads project memory and task records first
+- `/research` includes proactive memory detection (Step 6)
+- `/plan` updates task records with sizing and phase breakdown
+- `/dispatch` rewritten for always-on orchestration + conductor pattern
+- `global/CLAUDE.md` updated: v2.0 command table, conductor pattern, three-layer memory model
+- `install.sh` updated: v2.0 command list, merged commands removed
+- `README.md` rewritten for v2.0 features
+- `SETUP-GUIDE.md` updated for v2.0 workflow
+
+### Removed (merged)
+
+- `constitution.md` → merged into `/work setup`
+- `project-init.md` → merged into `/work setup`
+- `rebuild.md` → merged into `/work setup update`
+- `verify.md` → merged into `/work ship` (Gate 1)
+- `deliver.md` → merged into `/work ship` (Gate 2)
+- `graduate.md` → merged into `/work ship` (Gate 3)
+- `archive.md` → merged into `/work ship` (Gate 4)
+
+**Note:** The logic from removed commands is preserved verbatim inside `/work setup` and `/work ship`. Only the standalone command files are removed.
+
+---
+
 ## [1.3.0] - 2026-03-09
 
 ### Added
@@ -179,3 +251,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Language-specific constitution templates (Python, Ruby, Go)
 - VS Code extension for command palette integration
 - Metrics tracking for workflow efficiency
+- Cross-project task record dashboard

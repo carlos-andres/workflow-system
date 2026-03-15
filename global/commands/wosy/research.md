@@ -172,12 +172,62 @@ Run `/spec` to clarify requirements (if needed) or `/plan` to design implementat
 - Identified pattern: {pattern}
 ```
 
-### Step 5: Report Summary
+### Step 5: Update Task Record
+
+Update `.devwork/tasks/{task-id}.md`:
+- Check off `research codebase` in Progress
+- Update `## Active` with research summary
+- Update `updated:` date
+
+### Step 6: Proactive Memory Detection
+
+During research, watch for **tooling patterns** that should be saved to Claude project memory. If you discover any of the following, prompt the user:
+
+| Pattern Detected | Example | Suggested Memory File |
+|-----------------|---------|----------------------|
+| Database connection commands | `mysql --no-defaults --defaults-group-suffix=-local` | `tooling_database.md` |
+| SSH connections | `ssh tower`, custom host aliases | `tooling_ssh.md` |
+| Environment specifics | .test domains, custom nginx, PHP versions | `tooling_environment.md` |
+| CLI patterns | Custom scripts, specific flags, preferred tools | `tooling_cli.md` |
+| API endpoints | Internal APIs, auth patterns, base URLs | `tooling_api.md` |
+| Commit/PR conventions | Branch naming, commit prefixes, PR templates | `tooling_git.md` |
+
+**When a pattern is detected, ask:**
+
+> I found a tooling pattern worth remembering across sessions:
+> - **What**: {command/pattern}
+> - **Why this way**: {what to avoid and why}
+> - **Sandbox**: {any permission requirements}
+>
+> Save to project memory? (y/n)
+
+**If yes**, write an operational instruction to `~/.claude/projects/<project>/memory/`:
+
+```markdown
+---
+name: {pattern-name}
+description: {one-line — used to decide relevance in future sessions}
+type: reference
+---
+
+## {Tool/Pattern Name}
+- Command: `{exact command}`
+- Why this way: {what NOT to do and why}
+- Prerequisites: {config files, sandbox permissions, what must exist}
+- Verify: `{one-liner to confirm it works}`
+```
+
+Then update `~/.claude/projects/<project>/memory/MEMORY.md` index with a link to the new file.
+
+**Do NOT save tooling info to task records** — tooling goes in project memory only.
+
+### Step 7: Report Summary
 
 Output concise summary:
 
 ```
 ✓ Research complete: .devwork/{type}/{task-id}/research.md
+✓ Task record updated: .devwork/tasks/{task-id}.md
 
 Key findings:
 - Pattern to follow: {pattern}
@@ -187,6 +237,9 @@ Key findings:
 
 Unknowns resolved: {count} / {total from intake}
 Unresolved → forwarded to /wosy:spec
+
+{If tooling patterns found:}
+Tooling detected: {count} patterns — saved to project memory
 
 Next: /spec (if requirements unclear) or /plan (if ready)
 ```
@@ -198,3 +251,4 @@ For hotfix tasks, do a minimal research:
 2. Find related tests
 3. Check recent changes (git log)
 4. Skip full documentation - just report findings verbally
+5. Still update task record progress

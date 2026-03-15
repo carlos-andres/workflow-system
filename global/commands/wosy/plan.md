@@ -212,7 +212,7 @@ Score each factor using signals from research.md:
 | **XS** | Trivial — typo, config tweak, single-line fix | Skip dispatch. Just do it. No tasks.md needed. |
 | **S** | Small — clear scope, existing patterns, 1-3 files | Manual — work through tasks.md checkboxes |
 | **M** | Medium — multi-file, some parallelizable work | `/wosy:dispatch` — wosy orchestrates sub-agents |
-| **L** | Large — cross-domain, tight deps, needs review loops | `/wosy:dispatch` + thorough review via `/verify` |
+| **L** | Large — cross-domain, tight deps, needs review loops | `/wosy:dispatch` + thorough review via `/work ship` |
 | **XL** | Too big — must split into smaller tickets OR escalate | Split first. If unsplittable → `superpowers:subagent-driven-development` |
 
 Output sizing to user:
@@ -272,7 +272,7 @@ Create `.devwork/{type}/{task-id}/tasks.md`:
 - [ ] Run linting (use detected tools from constitution.md)
 - [ ] Manual verification
 - [ ] Update status.md
-- [ ] /deliver
+- [ ] /work ship
 
 ---
 
@@ -320,7 +320,40 @@ Parallelizable sets:
 
 > **Note:** Only generate the extended template sections (Dependency Graph, Task Details) when T-Shirt Size = M or higher. For XS and S, the phase checklists and Progress section above are sufficient.
 
-### Step 5: Update Status
+### Step 5: Update Task Record
+
+Update `.devwork/tasks/{task-id}.md`:
+- Check off `create implementation plan` in Progress
+- Set `size:` in header to the T-shirt size result
+- Replace generic progress steps with actual plan phases/tasks (keep ≤30 lines total)
+- Update `## Active` with plan summary
+- Update `updated:` date
+
+Example updated task record:
+```markdown
+# AUTH-001: Add user authentication
+type: feature | size: M | created: 2026-03-10 | updated: 2026-03-15
+
+## Progress
+- [x] research codebase
+- [x] create implementation plan
+- [ ] Phase 1: database + models (3 tasks)
+- [ ] Phase 2: auth service + middleware (4 tasks)
+- [ ] Phase 3: API endpoints (3 tasks)
+- [ ] Phase 4: testing (2 tasks)
+- [ ] deliver
+
+## Active
+plan complete — ready for dispatch
+
+## Dependencies
+- Phase 2 depends on Phase 1 (models must exist)
+
+## Workspace
+.devwork/feature/AUTH-001/
+```
+
+### Step 6: Update Status
 
 Update `.devwork/{type}/{task-id}/status.md`:
 
@@ -335,30 +368,37 @@ Update `.devwork/{type}/{task-id}/status.md`:
 
 ## Next Action
 Start Phase 1: {phase name}. See tasks.md for checklist.
+{If M/L/XL: "Run `/dispatch` to orchestrate implementation."}
 
 ## Session Log
 ### {YYYY-MM-DD}
 - Created implementation plan
+- T-shirt size: {size}
 - {n} phases, {n} total tasks
 - Estimated effort: {time}
 ```
 
-### Step 6: Confirm
+### Step 7: Confirm
 
 Output:
 
 ```
 ✓ Plan complete: .devwork/{type}/{task-id}/plan.md
 ✓ Tasks generated: .devwork/{type}/{task-id}/tasks.md
+✓ Task record updated: .devwork/tasks/{task-id}.md (size: {size})
 
 Summary:
+- T-shirt size: {size}
 - Phases: {count}
 - Tasks: {count}
 - New files: {count}
 - Modified files: {count}
 - Estimated: {time}
 
-Ready to implement. Start with Phase 1.
+{If XS: "Just do it — no dispatch needed."}
+{If S: "Work through tasks.md checkboxes, or run /dispatch."}
+{If M/L: "Run /dispatch to orchestrate with sub-agents."}
+{If XL: "Split into sub-tasks first. See suggested breakdown above."}
 ```
 
 ## Light Plan (for Bugfix)

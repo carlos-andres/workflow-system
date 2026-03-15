@@ -1,12 +1,13 @@
 # /status - Progress Update
 
-Update the status file with current progress. Essential for context-switching between projects.
+Update task record and status file with current progress. Essential for context-switching between projects.
 
 ## Usage
 ```
 /status
 /status "completed user validation"
 /status blocked "waiting for API credentials"
+/status check
 ```
 
 ## Prerequisites
@@ -14,9 +15,13 @@ Update the status file with current progress. Essential for context-switching be
 
 ## Instructions
 
-### Step 1: Load Current Status
+### Step 1: Load Task Record + Status
 
-Read `.devwork/{type}/{task-id}/status.md`
+1. Find the active task:
+   - Check `.devwork/tasks/` for task records — find the most recently updated one (or match by task-id if provided)
+   - Read the matching `.devwork/{type}/{task-id}/status.md`
+
+2. If multiple active tasks exist in `.devwork/tasks/`, list them and ask which one to update.
 
 ### Step 2: Determine Update Type
 
@@ -27,9 +32,42 @@ If message provided:
 If no message:
 - Ask: "What did you accomplish?" (brief)
 
-### Step 3: Update status.md
+### Step 3: Update Task Record
 
-Update the relevant sections:
+Update `.devwork/tasks/{task-id}.md`:
+- Check off completed steps in `## Progress`
+- Update `## Active` with current work description
+- Update the `updated:` date in the header
+- Add dependencies if discovered
+
+**Task record must stay ≤30 lines.** If it's growing, you're adding too much detail — keep it chart-level.
+
+```markdown
+# {TASK-ID}: {Brief Description}
+type: feature | size: M | created: 2026-01-15 | updated: {TODAY}
+
+## Progress
+- [x] research codebase
+- [x] define requirements
+- [x] create implementation plan
+- [ ] implement solution (3/8 files done)
+- [ ] test changes
+- [ ] deliver
+
+## Active
+implementing UserService — blocked on auth middleware refactor
+
+## Dependencies
+- auth middleware must complete before user service
+- image pipeline must resolve before QA
+
+## Workspace
+.devwork/feature/{task-id}/
+```
+
+### Step 4: Update status.md
+
+Update the workspace status file:
 
 ```markdown
 # Status: {task-id}
@@ -56,23 +94,24 @@ Update the relevant sections:
 - {new accomplishment}
 ```
 
-### Step 4: Update tasks.md (if exists)
+### Step 5: Update tasks.md (if exists)
 
 Check off completed items in `.devwork/{type}/{task-id}/tasks.md`
 
-### Step 5: Check for Phase Completion
+### Step 6: Check for Phase Completion
 
 If all tasks in a phase are done:
 - Note phase completion in session log
 - Update "Current Phase" in tasks.md
 - Suggest running checkpoint verification
 
-### Step 6: Confirm
+### Step 7: Confirm
 
 Output (terse):
 
 ```
 ✓ Status updated
+✓ Task record updated: .devwork/tasks/{task-id}.md
 
 Done: {what was marked done}
 Next: {next action}
@@ -86,7 +125,22 @@ If you just want to see current status without updating:
 /status check
 ```
 
-Output:
+Reads task records from `.devwork/tasks/` and outputs:
+
+```
+Active tasks:
+  {task-id}: {description}
+    Progress: {n}/{total} steps
+    Active: {current work}
+    Size: {XS/S/M/L/XL}
+
+  {task-id-2}: {description}
+    Progress: {n}/{total} steps
+    Active: {current work}
+    Blocked: {reason}
+```
+
+If only one active task, show single-task format:
 ```
 {task-id}: {description}
 Phase: {current phase}
@@ -116,14 +170,6 @@ When blocked:
 /status blocked "waiting for client to provide API keys"
 ```
 
-Updates status.md:
-```markdown
-## Tasks
-[BLOCKED] API integration - waiting for client to provide API keys
-
-## Current State
-Implementation paused. Cannot proceed with Phase 2 until API credentials received.
-
-## Next Action
-Follow up with client about API keys. Once received, continue with API integration.
-```
+Updates both task record and status.md:
+- Task record `## Active`: adds "BLOCKED: {reason}"
+- Status.md: adds `[BLOCKED]` item with reason

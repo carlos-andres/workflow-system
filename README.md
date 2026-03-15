@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.0-blue?style=flat-square" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-2.0.0-blue?style=flat-square" alt="Version"/>
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"/>
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="PRs Welcome"/>
 </p>
@@ -31,18 +31,18 @@ Working with AI coding assistants can be chaotic:
 - **Scope creep** — Features grow beyond original intent
 - **Context loss** — Forgetting where you left off after switching projects
 - **Missing edge cases** — Bugs slip through incomplete specs
-- **Breaking changes** — Modifications that break existing functionality
-- **Unclear requirements** — Starting to code before understanding the problem
+- **Tooling re-discovery** — Re-discovering DB connections, SSH commands, commit patterns every session
+- **Cognitive overhead** — Too many commands to remember
 
 ## The Solution
 
-A **structured workflow system** that brings order to AI-assisted development:
+A **structured workflow system** with a smart router, persistent task records, and project memory:
 
 ```
-/phase0 → /constitution → /intake → /research → /spec → /plan → implement → /verify → /deliver → /graduate → /archive
+/work → /intake → /research → /plan → /dispatch → /work ship
 ```
 
-One command to set up. Sixteen commands to master. Zero chaos.
+One smart router to guide you. Ten commands to master. Zero chaos.
 
 ---
 
@@ -53,187 +53,186 @@ One command to set up. Sixteen commands to master. Zero chaos.
 ./install.sh
 
 # 2. Open any project in Claude Code, then run:
-/constitution
+/work setup
 
 # 3. Start your first task:
 /intake AUTH-001 "Add user authentication"
 
-# 4. Follow the workflow:
-/research    # Understand the codebase
-/spec        # Define requirements (if unclear)
-/plan        # Design implementation
-# ... implement ...
-/status      # Track progress
-/verify      # Validate before shipping
-/deliver     # Prepare commit
-/graduate    # Preserve important decisions
-/archive     # Clean up workspace
+# 4. Let the smart router guide you:
+/work
 ```
 
-**That's it.** Your project now has AI coding guidelines, organized artifacts, and a repeatable process.
+**That's it.** The smart router reads your project state, detects what phase you're in, and suggests the right command.
+
+---
+
+## What's New in v2.0
+
+### Conductor Mode
+The main window is now a **conductor** — it holds context and orchestrates, never implements. Sub-agents do all the work.
+
+### Task Records
+Every task gets a compact, persistent record in `.devwork/tasks/` (max 30 lines). These survive across sessions — no more reconstructing context from scratch.
+
+### Memory Wiring
+Tooling patterns (DB connections, SSH commands, CLI preferences) are proactively detected and saved to Claude's project memory. Next session, they're loaded automatically.
+
+### Smart Router
+`/work` reads your project state and auto-detects what to do next. No more memorizing 16 commands.
+
+### Always-On Dispatch
+`/dispatch` scales from XS (single agent) to XL (split + parallel). No more size refusals.
+
+### Merged Commands (16 → 10)
+- `constitution` + `project-init` + `rebuild` → `/work setup`
+- `verify` + `deliver` + `graduate` + `archive` → `/work ship`
 
 ---
 
 ## Features
 
-### Single Setup Command
+### Smart Router (`/work`)
 
 ```bash
-/constitution
+/work    # Auto-detects: no setup? → /work setup
+         #               no tasks? → /intake
+         #               has plan? → /dispatch
+         #               all done? → /work ship
 ```
 
-One command creates everything:
-- `.devwork/` directory structure
-- AI coding guidelines document
-- Project `CLAUDE.md` configuration
-- Decision and spec indexes
-
-### AI Coding Guidelines
-
-The constitution extracts **real patterns** from your codebase:
+### Task Records (Persistent Clinical Charts)
 
 ```markdown
-## AI Coding Guidelines
+# AUTH-001: Add user authentication
+type: feature | size: M | created: 2026-01-15 | updated: 2026-03-10
 
-### Type Declarations
-- Return types: ALWAYS
-- Property types: ALWAYS
-- Strict types: YES
+## Progress
+- [x] research codebase
+- [x] create implementation plan
+- [ ] Phase 1: database + models
+- [ ] Phase 2: auth service
+- [ ] deliver
 
-### Naming Conventions
-| Element      | Convention     | Example          |
-|--------------|----------------|------------------|
-| Classes      | PascalCase     | `UserController` |
-| Methods      | camelCase      | `getUserById()`  |
-| DB Tables    | snake_case     | `user_profiles`  |
+## Active
+implementing auth middleware
+
+## Workspace
+.devwork/feature/AUTH-001/
 ```
 
-Claude Code reads this and writes code that **fits your project**.
+Max 30 lines. Created by `/intake`. Updated by every command. Read by `/work`, `/context`, `/dispatch`.
 
-### Organized Artifacts
+### Three-Layer Memory
+
+| Layer | Where | What | Lifespan |
+|-------|-------|------|----------|
+| Project Memory | `~/.claude/projects/<project>/memory/` | Tooling, connections, patterns | Permanent |
+| Task Records | `.devwork/tasks/*.md` | Per-task progress | Until archived |
+| Tasks API | In-session | Real-time orchestration | Session only |
+
+### Proactive Memory Detection
+
+During `/research` and `/work setup`, the system detects tooling patterns and asks to save them:
 
 ```
-.devwork/
-├── constitution.md          # AI coding guidelines
-├── decisions/               # Graduated ADRs (shareable)
-│   └── 0001-use-sanctum.md
-├── specs/                   # Graduated specs (shareable)
-│   └── auth-001-auth.md
-├── feature/                 # Active work
-│   └── auth-001/
-│       ├── status.md        # "Next Action" for context-switching
-│       ├── spec.md          # Working requirements
-│       └── plan.md          # Implementation approach
-└── _archive/                # Completed tickets
+I found a tooling pattern worth remembering:
+- Command: mysql --no-defaults --defaults-group-suffix=-local
+- Uses ~/.my.cnf [client-local] group (no inline credentials)
+- Needs sandbox override for socket access
+
+Save to project memory? (y/n)
 ```
 
-### Two-Tier Document System
+Next session, it's loaded automatically — no re-discovery.
 
-| Tier | Location | Purpose |
-|------|----------|---------|
-| **Working** | `feature/{id}/spec.md` | Drafts, iterations, messy notes |
-| **Graduated** | `specs/{id}-name.md` | Final, shareable, industry-format |
+### Conductor Pattern
 
-Graduate important work with `/graduate`. Keep your knowledge, clean your repos.
-
-### Smart Flags
-
-```bash
-/constitution              # Full setup
-/constitution update       # Re-scan, preserve notes
-/constitution reset        # Fresh start (with backup)
-/constitution repair       # Fix structure only
+```
+Main Window (Conductor)          Sub-Agents (Workers)
+├── Holds: task record, plan     ├── Read code
+├── Holds: constitution, memory  ├── Write code
+├── Dispatches agents            ├── Run tests
+├── Updates task records         └── Report results
+└── Reports to user
 ```
 
 ---
 
 ## Commands
 
-### Setup
+### Primary
 
 | Command | Purpose |
 |---------|---------|
-| `/phase0` | Greenfield discovery — idea to structured docs |
-| `/constitution` | **The only setup command you need** |
-| `/project-init` | Generate project CLAUDE.md |
-| `/pr-review` | Code review from diff |
+| `/work` | **Smart router** — auto-detects phase, suggests next command |
+| `/work setup` | Project setup (constitution + project-init). Flags: `update`, `reset`, `repair` |
+| `/work ship` | Delivery pipeline: verify → deliver → graduate → archive (with gates) |
 
 ### Workflow
 
 | Command | Phase | What it does |
 |---------|-------|--------------|
-| `/intake` | Start | Classify task, create workspace, suggest work mode |
-| `/research` | Discover | Explore codebase, find patterns |
+| `/intake` | Start | Classify task, create workspace + task record |
+| `/research` | Discover | Explore codebase, detect tooling, save to memory |
 | `/spec` | Define | Requirements interview |
-| `/plan` | Design | Implementation approach + tasks + sizing |
-| `/dispatch` | Execute | Orchestrate M/L-sized tasks with sub-agents |
-| `/status` | Track | Update progress, set "Next Action" |
-| `/context` | Resume | Quick state summary after context switch |
-| `/verify` | Checkpoint | Validate phase/task completion |
-| `/deliver` | Ship | Pre-commit checklist, generate message |
-| `/graduate` | Preserve | Promote artifacts to shareable location |
-| `/archive` | Cleanup | Archive completed workspaces |
+| `/plan` | Design | Implementation approach + T-shirt sizing |
+| `/dispatch` | Execute | Always-on orchestration (XS→XL) |
+| `/status` | Track | Update task records + status files |
+| `/context` | Resume | Read memory + task records, show state |
+| `/phase0` | Discovery | Greenfield project discovery (rare) |
 | `/pr-review` | Review | Code review from commit or branch diff |
 
 ### Work Modes
 
 ```
 Mode 1: Deep Dive (greenfield, complex discovery)
-  /phase0 → /constitution → /intake → /research → /spec → /plan → implement → /verify → /deliver → /graduate
+  /phase0 → /work setup → /intake → /research → /spec → /plan → /dispatch → /work ship
 
 Mode 2: Hybrid (existing codebase, feature work)
-  /intake → /research → /plan → implement → /verify → /deliver
+  /intake → /research → /plan → /dispatch → /work ship
   Skip /spec if requirements clear. Use /status between sessions.
 
 Mode 3: Straight (clear scope, quick tasks, hotfixes)
-  /intake → implement → /deliver
+  /intake → implement → /work ship
   Or skip /intake entirely if no tracking needed.
 
 Cross-cutting:
-  /context — resume any mode after context switch
-  /status  — update progress in any mode
-  /verify  — checkpoint before /deliver in any mode
+  /work     — smart router, auto-detects phase
+  /context  — resume after context switch (reads memory + task records)
+  /status   — update progress
 ```
 
 ---
 
 ## Namespaced Commands (wosy:)
 
-All workflow commands are also available with the `wosy:` namespace prefix for coexistence with other plugin systems:
+All workflow commands are available with the `wosy:` namespace prefix:
 
 ```
+/wosy:work       # Same as /work
 /wosy:intake     # Same as /intake
-/wosy:plan       # Same as /plan
-/wosy:deliver    # Same as /deliver
-# ... etc for all 16 commands
+/wosy:dispatch   # Same as /dispatch
+# ... etc for all 10 commands
 ```
-
-The `wosy/` subfolder in `~/.claude/commands/` contains the canonical copies. The flat files serve as aliases for convenience.
 
 ---
 
 ## Philosophy
 
-### Industry Standards, Solo Dev Reality
-
-We use **industry-standard formats** (MADR for ADRs, spec-kit style for specs) inside a **lightweight workflow** designed for individual developers.
+### Conductor, Not Worker
+The main window orchestrates — it dispatches agents, tracks progress, and updates records. It never writes implementation code directly.
 
 ### Extract, Don't Assume
+The constitution **reads your actual code** to understand patterns. No generic templates — real examples from your codebase.
 
-The constitution **reads your actual code** to understand patterns. No generic templates—real examples from your codebase.
-
-### Working vs Permanent
-
-Messy drafts stay in ticket folders. Important decisions graduate to shareable directories. Best of both worlds.
+### Remember, Don't Re-discover
+Tooling patterns are saved to project memory. DB connections, SSH commands, API endpoints — discovered once, used forever.
 
 ### Context-Switching Solved
+Task records + project memory mean you can return to any project and pick up exactly where you left off.
 
-Every `status.md` has a "Next Action" field. Come back after a week? You know exactly where to pick up.
-
-```markdown
-## Next Action
-Implement the `validateYear()` method in YearFilter.php, then write test.
-```
+### Working vs Permanent
+Messy drafts stay in ticket folders. Important decisions graduate to shareable directories. Best of both worlds.
 
 ---
 
@@ -252,31 +251,25 @@ chmod +x install.sh
 
 ```
 ~/.claude/
-├── CLAUDE.md              # Global configuration
+├── CLAUDE.md              # Global configuration (v2.0)
 └── commands/
-    ├── phase0.md          # Greenfield discovery
-    ├── constitution.md    # Setup + AI guidelines
-    ├── project-init.md    # Project CLAUDE.md generator
-    ├── intake.md          # Task classification
-    ├── research.md        # Codebase exploration
-    ├── spec.md            # Requirements interview
-    ├── plan.md            # Implementation planning
-    ├── status.md          # Progress tracking
-    ├── context.md         # Context switch resume
-    ├── verify.md          # Phase validation
-    ├── deliver.md         # Commit preparation
-    ├── graduate.md        # Artifact promotion
-    ├── pr-review.md          # Code review from diff
-    ├── dispatch.md        # Task orchestration
-    ├── archive.md         # Workspace cleanup
-    └── wosy/              # Namespaced canonical copies
-        ├── (all 16 commands)
+    └── wosy/              # All 10 commands
+        ├── work.md        # Smart router + setup + ship
+        ├── phase0.md      # Greenfield discovery
+        ├── intake.md      # Task classification + records
+        ├── research.md    # Exploration + memory detection
+        ├── spec.md        # Requirements interview
+        ├── plan.md        # Planning + sizing
+        ├── dispatch.md    # Always-on orchestration
+        ├── status.md      # Progress tracking
+        ├── context.md     # Context resume
+        └── pr-review.md   # Code review
 ```
 
 ### Manual Installation
 
 1. Copy `global/CLAUDE.md` to `~/.claude/CLAUDE.md`
-2. Copy `global/commands/*.md` to `~/.claude/commands/`
+2. Copy `global/commands/wosy/*.md` to `~/.claude/commands/wosy/`
 3. Add `.devwork/` to your global gitignore:
    ```bash
    echo ".devwork/" >> ~/.gitignore_global
@@ -287,22 +280,25 @@ chmod +x install.sh
 
 ## Project Structure
 
-After running `/constitution` in a project:
+After running `/work setup` in a project:
 
 ```
 your-project/
 ├── CLAUDE.md                    # Project config (references constitution)
 └── .devwork/                    # Gitignored
     ├── constitution.md          # AI coding guidelines
+    ├── tasks/                   # Task records (clinical charts)
+    │   ├── 001.md
+    │   ├── AUTH-001.md
+    │   └── UPGRADE-001.md
     ├── decisions/               # Graduated ADRs
     │   ├── README.md
-    │   ├── 0001-auth-strategy.md
-    │   └── 0002-caching-layer.md
+    │   └── 0001-auth-strategy.md
     ├── specs/                   # Graduated specs
     │   ├── README.md
-    │   └── auth-001-notifications.md
+    │   └── auth-001-auth.md
     ├── feature/                 # Active features
-    │   └── auth-001/
+    │   └── AUTH-001/
     │       ├── status.md
     │       ├── research.md
     │       ├── spec.md
@@ -315,57 +311,50 @@ your-project/
 
 ---
 
-## Constitution Example
-
-Here's what gets generated:
+## Task Record Example
 
 ```markdown
-# Project Constitution
+# UPGRADE-001: Joomla → Astro Migration
+type: feature | size: L | created: 2026-01-15 | updated: 2026-03-10
 
-> AI Coding Guidelines for acme-api
-> Generated: 2025-01-31
+## Progress
+- [x] research current live site
+- [x] inventory (images, content, sitemap)
+- [x] Astro local setup
+- [x] Astro scaffolding
+- [ ] port pages/content (12/28 pages done)
+- [ ] QA / end-to-end review
 
-## Tech Stack
+## Active
+porting product pages — blocked on image optimization pipeline
 
-| Component | Version |
-|-----------|---------|
-| PHP       | 8.3     |
-| Laravel   | 11.x    |
-| Database  | MySQL   |
+## Dependencies
+- scaffolding must complete before page porting
+- image pipeline must resolve before QA
 
-## AI Coding Guidelines
+## Workspace
+.devwork/feature/UPGRADE-001/
+```
 
-### Type Declarations
-- Return types: **ALWAYS**
-- Strict types: **YES**
+**Relationship**: The task record is the **chart** (compact status). The workspace is the **medical records** (full artifacts). The chart references the workspace but doesn't duplicate it.
 
-### Import Organization
-// Framework first, then App classes, alphabetized
-use Illuminate\Http\JsonResponse;
-use App\Models\User;
-use App\Services\UserService;
+---
 
-### Controller Pattern
-// From: app/Http/Controllers/UserController.php
-class UserController extends Controller
-{
-    public function __construct(
-        private UserService $userService
-    ) {}
+## Memory Example
 
-    public function show(int $id): JsonResponse
-    {
-        return UserResource::make(
-            $this->userService->find($id)
-        );
-    }
-}
+```markdown
+---
+name: database-connection
+description: MySQL connection pattern — uses my.cnf groups, no inline credentials
+type: reference
+---
 
-## Do NOT Touch
-<!-- Your notes here -->
-
-## Manual Notes
-<!-- Your notes here -->
+## MySQL Local
+- Command: `mysql --no-defaults --defaults-group-suffix=-local`
+- Why `--no-defaults`: multiple MySQL connections, each has its own group
+- NEVER use: `mysql -uroot -p` or inline credentials
+- Sandbox: requires `dangerouslyDisableSandbox` for socket access
+- Verify: `mysql --no-defaults --defaults-group-suffix=-local -e "SELECT 1"`
 ```
 
 ---
@@ -379,7 +368,6 @@ Contributions are welcome! This system was born from real pain points in AI-assi
 - **Language-specific constitutions** — Ruby, Python, Go templates
 - **IDE integrations** — VS Code extension, JetBrains plugin
 - **Metrics** — Track time saved, decisions made
-- **Themes** — Different constitution styles
 
 ### How to Contribute
 
@@ -399,75 +387,12 @@ MIT License — use it, modify it, share it.
 
 ## References & Industry Standards
 
-This workflow system is built on proven industry standards and best practices:
+This workflow system is built on proven industry standards:
 
-### Claude Code (Anthropic)
-- **Source**: [Claude Code Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices)
-- **Used for**: CLAUDE.md hierarchy, slash commands, skills structure
-- **Key insight**: Global → Project → Subdirectory configuration inheritance
-
-### Spec-Kit (GitHub)
-- **Source**: [github/spec-kit](https://github.com/github/spec-kit)
-- **Used for**: Spec-driven development, spec.md format, tasks.md structure
-- **Key insight**: Constitution concept, branch-based specs, requirements-first approach
-
-### MADR (Markdown ADR)
-- **Source**: [adr.github.io/madr](https://adr.github.io/madr/)
-- **Used for**: ADR format, decision documentation structure
-- **Key insight**: Status lifecycle, decision drivers, consequences documentation
-
-### ADR Standards
-- **Sources**:
-  - [AWS Prescriptive Guidance](https://docs.aws.amazon.com/prescriptive-guidance/latest/architectural-decision-records/welcome.html)
-  - [Microsoft Azure Architecture](https://learn.microsoft.com/en-us/azure/architecture/decision-log/)
-  - [Nygard's Original ADR](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
-- **Used for**: Numbering convention, decision log index, status management
-- **Key insight**: Never delete ADRs, mark as superseded instead
-
-### Cursor AI
-- **Source**: Cursor IDE documentation
-- **Used for**: Hierarchical rules concept, `.cursor/rules/` pattern
-- **Key insight**: Team-shareable AI configuration files
-
-### Conventional Commits
-- **Source**: [conventionalcommits.org](https://www.conventionalcommits.org/)
-- **Used for**: Commit message format in `/deliver` command
-- **Key insight**: `feat:`, `fix:`, `refactor:` prefixes for clear history
-
----
-
-## Why This Hybrid Approach?
-
-We analyzed existing standards and found a gap:
-
-| Standard | Designed For | Limitation for Solo + AI |
-|----------|--------------|--------------------------|
-| Spec-Kit | Teams, committed to git | Too heavy, pollutes repo |
-| MADR | Team decisions | No working/draft workflow |
-| Cursor Rules | AI configuration | No project management |
-| Claude CLAUDE.md | AI context | No artifact organization |
-
-**Our solution**: Take the best document formats from industry (MADR, spec-kit) and wrap them in a lightweight workflow designed for solo developers using AI assistants.
-
-### Key Innovations
-
-1. **Two-tier documents** — Working drafts vs graduated finals
-2. **Gitignored artifacts** — Keep repos clean, knowledge preserved
-3. **Single setup command** — `/constitution` does everything
-4. **AI coding guidelines** — Extracted from actual code, not templates
-5. **Context-switching support** — "Next Action" in every status.md
-6. **Work modes** — Deep Dive, Hybrid, Straight for different task types
-7. **Phase 0** — Pre-code discovery for greenfield projects
-
----
-
-## Acknowledgments
-
-- **[Anthropic](https://anthropic.com)** — For Claude Code and the CLAUDE.md concept
-- **[GitHub Spec-Kit](https://github.com/github/spec-kit)** — For spec-driven development inspiration
-- **[MADR](https://adr.github.io/madr/)** — For the ADR format we adopted
-- **[Conventional Commits](https://conventionalcommits.org)** — For commit message standards
-- **The developer community** — For feedback, ideas, and real-world testing
+- **[Anthropic Claude Code](https://www.anthropic.com/engineering/claude-code-best-practices)** — CLAUDE.md hierarchy, slash commands
+- **[GitHub Spec-Kit](https://github.com/github/spec-kit)** — Spec-driven development, constitution concept
+- **[MADR](https://adr.github.io/madr/)** — ADR format
+- **[Conventional Commits](https://conventionalcommits.org)** — Commit message standards
 
 ---
 

@@ -8,7 +8,7 @@
 
 ## 1. Purpose
 
-A single Claude Code slash command that conducts an adaptive, cascading interview to transform a raw project idea into structured documentation ready for `/constitution` → `/intake`.
+A single Claude Code slash command that conducts an adaptive, cascading interview to transform a raw project idea into structured documentation ready for `/work setup` → `/intake`.
 
 **Input:** A rough idea (one sentence, a paragraph, an ASCII sketch, a screenshot — anything).
 **Output:** 4 living documents + 1 comprehensive README.md that bridges Phase 0 into the workflow-system.
@@ -32,13 +32,13 @@ A single Claude Code slash command that conducts an adaptive, cascading intervie
   └── Generates comprehensive README.md
        │
        ▼
-/constitution (reads README, generates AI coding guidelines)
+/work setup (reads README, generates AI coding guidelines)
        │
        ▼
-/intake → /research → /spec → /plan → implement → /deliver → /graduate
+/intake → /research → /spec → /plan → /dispatch → /work ship
 ```
 
-Phase 0 is the **only command that runs before any code exists**. It creates just enough structure and documentation for `/constitution` to take over.
+Phase 0 is the **only command that runs before any code exists**. It creates just enough structure and documentation for `/work setup` to take over.
 
 ---
 
@@ -62,16 +62,16 @@ Phase 0 is the **only command that runs before any code exists**. It creates jus
 project-root/
 └── README.md               # Comprehensive project README
                              # Consolidates all 4 docs into a single
-                             # source of truth for /constitution
+                             # source of truth for /work setup
 ```
 
 ### Why this structure?
 
 - `.devwork/_scratch/` is the workflow-system's designated temporary workspace
-- No `/constitution` or `/init` required — zero friction to start
+- No `/work setup` required — zero friction to start
 - Phase 0 only creates `.devwork/_scratch/phase0/` — nothing else
-- The README.md is the bridge: it gives `/constitution` enough context to generate AI coding guidelines even without code
-- When `/constitution` eventually runs, it creates the rest of `.devwork/` (decisions/, specs/, feature/, etc.)
+- The README.md is the bridge: it gives `/work setup` enough context to generate AI coding guidelines even without code
+- When `/work setup` eventually runs, it creates the rest of `.devwork/` (decisions/, specs/, feature/, etc.)
 
 ---
 
@@ -203,7 +203,7 @@ project-root/
 
 ### 4.5 — `README.md` (generated on completion)
 
-This is the **key deliverable** — a comprehensive project README that consolidates everything discovered during Phase 0 into a format that `/constitution` can consume.
+This is the **key deliverable** — a comprehensive project README that consolidates everything discovered during Phase 0 into a format that `/work setup` can consume.
 
 ```markdown
 # {Project Name}
@@ -252,7 +252,7 @@ This is the **key deliverable** — a comprehensive project README that consolid
 
 ## Phase Status
 > 🟡 Phase 0 complete — {date}
-> No code yet. Run `/constitution` to generate AI coding guidelines from this README.
+> No code yet. Run `/work setup` to generate AI coding guidelines from this README.
 > Phase 0 working documents available in `.devwork/_scratch/phase0/`
 ```
 
@@ -401,12 +401,12 @@ Phase 0 Complete ✅
 ```
 
 **Step 2: Generate README.md**
-Consolidate all 4 documents into a comprehensive README.md at the project root (see template in section 4.5). This is the primary deliverable that bridges Phase 0 to `/constitution`.
+Consolidate all 4 documents into a comprehensive README.md at the project root (see template in section 4.5). This is the primary deliverable that bridges Phase 0 to `/work setup`.
 
 **Step 3: Suggest next step**
 ```
 📋 README.md generated at project root.
-   → Run `/constitution` to generate AI coding guidelines.
+   → Run `/work setup` to generate AI coding guidelines.
    → Constitution will read your README and set up .devwork/ structure.
    → After that, use `/intake` to start your first task.
 ```
@@ -419,7 +419,7 @@ The user is never forced to address open items — they decide if it's good enou
 
 ### 6.1 — The README Bridge
 
-The README.md is the handoff artifact between Phase 0 and the workflow-system. Here's how `/constitution` uses it:
+The README.md is the handoff artifact between Phase 0 and the workflow-system. Here's how `/work setup` uses it:
 
 | README Section | Constitution Uses It For |
 |---------------|--------------------------|
@@ -429,7 +429,7 @@ The README.md is the handoff artifact between Phase 0 and the workflow-system. H
 | Project Rules & Constraints | Inform "Do NOT Touch" section |
 | Planned Directory Structure | Validate constitution structure suggestions |
 
-Because the README is thorough, `/constitution` can generate useful AI coding guidelines even with zero code. When code is eventually written, `/constitution update` re-scans and enriches the guidelines with real patterns.
+Because the README is thorough, `/work setup` can generate useful AI coding guidelines even with zero code. When code is eventually written, `/work setup update` re-scans and enriches the guidelines with real patterns.
 
 ### 6.2 — Phase 0 Docs After Constitution
 
@@ -439,13 +439,13 @@ The 4 working documents in `_scratch/phase0/` remain available as reference:
 |-------------------|--------------|-----|
 | `01-idea.md` | `/intake` | Context for task classification |
 | `02-discovery.md` | `/research` | Pre-populates research, reduces exploration |
-| `03-decisions.md` | `/graduate` | Seeds graduated ADRs in `.devwork/decisions/` |
+| `03-decisions.md` | `/work ship` | Seeds graduated ADRs in `.devwork/decisions/` |
 | `04-specs.md` | `/spec` + `/plan` | Foundation of working spec and implementation plan |
 
 ### 6.3 — No Lock-in
 
 - Phase 0 docs are drafts in `_scratch/` — they can be edited, discarded, or archived
-- The workflow-system's `/graduate` command handles promotion to permanent locations
+- The workflow-system's `/work ship` command handles promotion to permanent locations
 - If something from Phase 0 changes during development, the workflow handles iteration naturally
 - Phase 0 does NOT modify any existing workflow-system commands or behavior
 
@@ -552,7 +552,7 @@ Phase 0 Complete ✅
 - Diff highlighting behavior not discussed (color coding, inline vs side-by-side markers)
 
 📝 README.md generated at project root.
-   → Run `/constitution` to generate AI coding guidelines.
+   → Run `/work setup` to generate AI coding guidelines.
    → Constitution will read your README and set up .devwork/ structure.
    → After that, use `/intake` to start your first task.
 ```
@@ -596,6 +596,6 @@ If the user wants to run Phase 0 for multiple ideas:
 **Compatibility:**
 - Works with the existing workflow-system without modifications
 - The command is purely additive — it doesn't change any existing commands
-- Constitution's `repair` and `update` flags handle the partial `.devwork/` structure gracefully
+- `/work setup`'s `repair` and `update` flags handle the partial `.devwork/` structure gracefully
 
 **Estimated command size:** ~250-350 lines of markdown instructions

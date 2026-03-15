@@ -168,7 +168,14 @@ As a {actor}, I want to {action} so that {benefit}.
 - Plan: `.devwork/{type}/{task-id}/plan.md` (after /plan)
 ```
 
-### Step 4: Update Status
+### Step 4: Update Task Record
+
+Update `.devwork/tasks/{task-id}.md`:
+- Check off `define requirements` in Progress
+- Update `## Active` with spec summary
+- Update `updated:` date
+
+### Step 5: Update Status
 
 Update `.devwork/{type}/{task-id}/status.md`:
 
@@ -189,11 +196,11 @@ Run `/plan` to design the implementation approach.
 - Defined {n} acceptance criteria
 ```
 
-### Step 5: Update README
+### Step 6: Update README
 
 Update `.devwork/{type}/{task-id}/README.md` with objective and scope from spec.
 
-### Step 6: Confirm
+### Step 7: Confirm
 
 Output:
 
