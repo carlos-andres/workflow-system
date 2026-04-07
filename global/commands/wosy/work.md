@@ -31,12 +31,15 @@ Parse `$ARGUMENTS`:
 
 ## Smart Router (default: no arguments)
 
+> Reference: [Conductor Discipline](conductor.md) | [Model Assignment](models.md)
+
 ### Step 1: Read Project State
 
 1. Check if `.devwork/` exists
 2. Read `.devwork/tasks/*.md` for active task records
 3. Read Claude project memory from `~/.claude/projects/<project>/memory/` for tooling context
 4. Check if `.devwork/constitution.md` exists
+5. Detect project type by matching the current working directory against `WORK_ROOT` and `PERSONAL_ROOT` from `~/.claude/CLAUDE.md` → **corporate | personal | unknown**
 
 ### Step 2: Determine Current State & Recommend
 
@@ -134,11 +137,11 @@ mkdir -p .devwork/{decisions,specs,feature,hotfix,_archive,_scratch,tasks}
 - Extract: method signatures, return types, error patterns, naming conventions
 
 **Phase 4: Generate Constitution**
-- Output `.devwork/constitution.md` using the adaptive template from the old `/constitution` command
+- Output `.devwork/constitution.md` using the adaptive constitution template
 - Include only sections relevant to detected stack
 
 **Phase 5: Generate Project CLAUDE.md**
-- Analyze project (same as old `/project-init`)
+- Analyze project and generate project CLAUDE.md
 - Interview user for what cannot be inferred (one-liner, users, role)
 - Generate project `CLAUDE.md` with persona, workflow, commands, integrations, orchestration sections
 
@@ -196,7 +199,7 @@ Sequential delivery pipeline with gates. User can bail at any gate.
 
 ### Gate 1: Verify
 
-Run verification checklist (same logic as old `/verify`):
+Run verification checklist:
 
 1. Find active workspace
 2. Determine phase to verify (research/spec/plan/deliver)
@@ -222,7 +225,7 @@ Run verification checklist (same logic as old `/verify`):
 
 ### Gate 2: Deliver
 
-Run delivery preparation (same logic as old `/deliver`):
+Run delivery preparation:
 
 1. Load context (status.md, tasks.md, spec.md)
 2. Detect project tools from constitution
@@ -247,7 +250,10 @@ Commands:
 6. Update task record: mark deliver step as done
 7. Update status.md: set state to DELIVERED
 
-**NEVER auto-commit.** Show message, let user execute.
+**Commit policy** (see [conductor.md](conductor.md), roots in `~/.claude/CLAUDE.md`):
+- **corporate** (`WORK_ROOT`): Present commit message + PR description as copy-ready text blocks. Never run git. User executes manually.
+- **personal** (`PERSONAL_ROOT`): Present commit text. Execute only if user explicitly approves for this project.
+- **Non-git tasks** (reports, research, QA, deployment): Skip Gate 2 entirely — no commit step.
 
 **Gate**: User must confirm to continue to Gate 3.
 
@@ -267,7 +273,6 @@ If yes:
 - Graduate specs to `.devwork/specs/{task-id}-{slug}.md`
 - Graduate ADRs to `.devwork/decisions/NNNN-{slug}.md`
 - Update decision index
-- Same logic as old `/graduate` command
 
 If no: skip to Gate 4.
 
@@ -282,7 +287,6 @@ If yes:
 - Move workspace to `_archive/`
 - Update archive index (`.devwork/_archive/README.md`)
 - Update task record: mark as archived
-- Same logic as old `/archive` command
 
 If no: keep workspace in place.
 
@@ -309,9 +313,12 @@ Task record: .devwork/tasks/{task-id}.md (updated)
 
 ## Key Rules
 
-- **Conductor pattern**: Main window orchestrates, sub-agents implement
+- **Conductor pattern**: Main window orchestrates, sub-agents implement. See [conductor.md](conductor.md).
 - **Task records first**: Always read `.devwork/tasks/` before acting
 - **Project memory**: Load tooling context from Claude memory on every `/work` invocation
-- **Never auto-commit**: Always show git commands, let user execute
+- **Status = done log**: `status.md` records what's verified, not what's pending
+- **Scope gate**: Never dispatch without a scope doc (spec.md or plan.md) in the workspace
+- **Model matters**: Use Opus for planning/review, Sonnet for implementation. See [models.md](models.md).
+- **Commit policy**: corporate (`WORK_ROOT`) → text only. personal (`PERSONAL_ROOT`) → offer + confirm. Non-git tasks → skip entirely.
 - **Gates are optional**: User can bail at any point in `/work ship`
 - **Backward compatible**: Old workflow paths still work (`/intake` → `/research` → etc.)

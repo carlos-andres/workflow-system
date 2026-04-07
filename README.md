@@ -42,7 +42,7 @@ A **structured workflow system** with a smart router, persistent task records, a
 /work → /intake → /research → /plan → /dispatch → /work ship
 ```
 
-One smart router to guide you. Ten commands to master. Zero chaos.
+One smart router to guide you. Ten commands to master, two reference docs to guide agents. Zero chaos.
 
 ---
 
@@ -83,9 +83,10 @@ Tooling patterns (DB connections, SSH commands, CLI preferences) are proactively
 ### Always-On Dispatch
 `/dispatch` scales from XS (single agent) to XL (split + parallel). No more size refusals.
 
-### Merged Commands (16 → 10)
+### Merged Commands (16 → 10 commands + 2 reference docs)
 - `constitution` + `project-init` + `rebuild` → `/work setup`
 - `verify` + `deliver` + `graduate` + `archive` → `/work ship`
+- Added `conductor.md` + `models.md` as reference docs (loaded as `/wosy:conductor`, `/wosy:models`)
 
 ---
 
@@ -104,7 +105,7 @@ Tooling patterns (DB connections, SSH commands, CLI preferences) are proactively
 
 ```markdown
 # AUTH-001: Add user authentication
-type: feature | size: M | created: 2026-01-15 | updated: 2026-03-10
+type: feature | size: M | created: {YYYY-MM-DD} | updated: {YYYY-MM-DD}
 
 ## Progress
 - [x] research codebase
@@ -212,7 +213,7 @@ All workflow commands are available with the `wosy:` namespace prefix:
 /wosy:work       # Same as /work
 /wosy:intake     # Same as /intake
 /wosy:dispatch   # Same as /dispatch
-# ... etc for all 10 commands
+# ... etc for all 12 files
 ```
 
 ---
@@ -253,7 +254,7 @@ chmod +x install.sh
 ~/.claude/
 ├── CLAUDE.md              # Global configuration (v2.0)
 └── commands/
-    └── wosy/              # All 10 commands
+    └── wosy/              # 10 commands + 2 reference docs
         ├── work.md        # Smart router + setup + ship
         ├── phase0.md      # Greenfield discovery
         ├── intake.md      # Task classification + records
@@ -263,7 +264,9 @@ chmod +x install.sh
         ├── dispatch.md    # Always-on orchestration
         ├── status.md      # Progress tracking
         ├── context.md     # Context resume
-        └── pr-review.md   # Code review
+        ├── pr-review.md   # Code review
+        ├── conductor.md   # Conductor discipline (reference)
+        └── models.md      # Model assignment guide (reference)
 ```
 
 ### Manual Installation
@@ -382,6 +385,12 @@ Contributions are welcome! This system was born from real pain points in AI-assi
 ## License
 
 MIT License — use it, modify it, share it.
+
+---
+
+## Release Notes
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and upgrade notes from v1.x.
 
 ---
 

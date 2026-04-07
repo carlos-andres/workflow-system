@@ -2,6 +2,9 @@
 
 Design the implementation approach and create a task breakdown.
 
+> **Model**: This command benefits from `opus` (latest) — planning requires architectural thinking.
+> Reference: [Model Assignment](models.md) | [Conductor Discipline](conductor.md)
+
 ## Usage
 ```
 /plan
@@ -213,7 +216,7 @@ Score each factor using signals from research.md:
 | **S** | Small — clear scope, existing patterns, 1-3 files | Manual — work through tasks.md checkboxes |
 | **M** | Medium — multi-file, some parallelizable work | `/wosy:dispatch` — wosy orchestrates sub-agents |
 | **L** | Large — cross-domain, tight deps, needs review loops | `/wosy:dispatch` + thorough review via `/work ship` |
-| **XL** | Too big — must split into smaller tickets OR escalate | Split first. If unsplittable → `superpowers:subagent-driven-development` |
+| **XL** | Too big — must split into smaller tickets | Split into sub-tickets. Run `/plan` on each sub-ticket, then `/dispatch` per ticket. |
 
 Output sizing to user:
 
@@ -226,7 +229,7 @@ Output sizing to user:
 > {If XL}: ⚠ This task should be split. Suggest ticket breakdown:
 > - Ticket A: {scope}
 > - Ticket B: {scope}
-> {If unsplittable XL}: Escalate to `superpowers:subagent-driven-development`
+> {If XL}: Break into sub-tickets. Each sub-ticket gets its own `/plan` + `/dispatch` cycle.
 
 Write sizing result to `tasks.md` header.
 
@@ -286,7 +289,7 @@ Create `.devwork/{type}/{task-id}/tasks.md`:
 
 ## T-Shirt Size: {XS/S/M/L/XL}
 Effort: {score} | Complexity: {score} | Risk: {score}
-Execution: {Manual / wosy:dispatch / dispatch+review / split+superpowers}
+Execution: {Manual / wosy:dispatch / dispatch+review / split+dispatch}
 
 ## Dependency Graph
 

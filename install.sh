@@ -7,7 +7,7 @@
 # This script installs the complete workflow system for Claude Code:
 # - Cleans ALL existing custom commands (fresh start)
 # - Installs new CLAUDE.md with workflow awareness
-# - Installs all slash commands (10 commands, wosy/ namespace)
+# - Installs all slash commands (12 commands, wosy/ namespace)
 # - Adds .devwork/ to global gitignore
 #
 # Usage: ./install.sh
@@ -121,7 +121,7 @@ install_claude_md() {
 install_commands() {
     print_header "Step 4: Installing Workflow Commands"
 
-    # v2.0 command list (10 commands — merged from 16)
+    # v2.0 command list (12 commands — merged from 16 + conductor/models docs)
     local commands=(
         "work"
         "phase0"
@@ -133,6 +133,8 @@ install_commands() {
         "status"
         "context"
         "pr-review"
+        "conductor"
+        "models"
     )
 
     # Install wosy/ namespace (single source of truth)
@@ -195,7 +197,7 @@ verify_installation() {
     fi
 
     # Check commands
-    local commands=("work" "phase0" "intake" "research" "spec" "plan" "dispatch" "status" "context" "pr-review")
+    local commands=("work" "phase0" "intake" "research" "spec" "plan" "dispatch" "status" "context" "pr-review" "conductor" "models")
     for cmd in "${commands[@]}"; do
         if [ -f "$COMMANDS_DIR/wosy/$cmd.md" ]; then
             print_success "/wosy:$cmd command installed"
@@ -237,6 +239,8 @@ print_summary() {
     echo "  ~/.claude/commands/wosy/status.md           # Progress tracking (task records)"
     echo "  ~/.claude/commands/wosy/context.md          # Context switch resume (memory + records)"
     echo "  ~/.claude/commands/wosy/pr-review.md        # Code review from diff"
+    echo "  ~/.claude/commands/wosy/conductor.md        # Conductor pattern documentation"
+    echo "  ~/.claude/commands/wosy/models.md           # Memory/task data models"
     echo ""
     echo -e "${YELLOW}What's New in v2.0:${NC}"
     echo ""
@@ -259,7 +263,7 @@ print_summary() {
     echo "  4. Let the smart router guide you:"
     echo "     /work"
     echo ""
-    echo -e "${BLUE}Commands (10 files, sub-commands via /work):${NC}"
+    echo -e "${BLUE}Commands (12 files, sub-commands via /work):${NC}"
     echo "  /work                 - Smart router (auto-detects phase)"
     echo "  /work setup           - Project setup (constitution + project-init)"
     echo "  /work setup update    - Re-scan, preserve manual notes"
@@ -293,7 +297,7 @@ main() {
     echo "This will:"
     echo "  1. Clean ALL existing commands (fresh start)"
     echo "  2. Install enhanced CLAUDE.md (v2.0)"
-    echo "  3. Install 10 workflow commands (wosy/ namespace)"
+    echo "  3. Install 12 workflow commands (wosy/ namespace)"
     echo "  4. Add .devwork/ to global gitignore"
     echo ""
     echo "Merged commands (no longer standalone):"

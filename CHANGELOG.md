@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-04-07
+
+### Added
+
+- **`conductor.md`** — Reference guide for main-window orchestration discipline (not a slash command; loaded as `/wosy:conductor`)
+- **`models.md`** — Reference guide for model assignment strategy (not a slash command; loaded as `/wosy:models`)
+
+### Changed
+
+- `install.sh` updated: 10 → 12 files installed in `wosy/` namespace (includes conductor.md and models.md)
+- `models.md` model names changed to generic aliases (`opus`, `sonnet`) — version-agnostic, resolved by Claude Code at runtime
+- `plan.md` XL sizing: removed external skill escalation, replaced with native split+dispatch strategy
+- `work.md` removed v1.x legacy command references ("same as old /verify", etc.)
+- `global/CLAUDE.md` made fully agnostic: removed plugin-specific sections, added placeholder Project Roots
+
+---
+
 ## [2.0.0] - 2026-03-15
 
 ### Added
@@ -110,7 +127,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.2.0] - 2026-03-09
+## [1.2.0] - 2026-03-08
 
 ### Added
 

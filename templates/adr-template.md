@@ -1,6 +1,9 @@
 # ADR: {Title}
 
-> Architecture Decision Record for {JIRA-ID}
+> Architecture Decision Record for {TICKET-ID}
+>
+> **Working location:** `.devwork/{type}/{ticket-id}/adr.md`
+> **Graduated location:** `.devwork/decisions/D{NNN}-{slug}.md` (after `/work ship` Gate 3)
 
 ## Status
 

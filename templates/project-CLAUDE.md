@@ -30,12 +30,14 @@ See `.devwork/constitution.md` for:
 
 ## Key Directories
 
+> See `.devwork/constitution.md` for the full detected directory structure.
+> Add only project-specific overrides or notable paths here.
+
 | Purpose | Location |
 |---------|----------|
-| Controllers | `app/Http/Controllers/` |
-| Services | `app/Services/` |
-| Models | `app/Models/` |
-| Tests | `tests/` |
+| {Entry point / main module} | `{path}` |
+| {Core logic} | `{path}` |
+| {Tests} | `{path}` |
 
 ## Active Work
 

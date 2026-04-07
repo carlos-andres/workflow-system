@@ -26,7 +26,7 @@ chmod +x install.sh
 The installer will:
 1. Clean ALL existing custom commands (fresh start)
 2. Install enhanced `~/.claude/CLAUDE.md` (v2.0)
-3. Install 10 workflow commands in `~/.claude/commands/wosy/`
+3. Install 12 files in `~/.claude/commands/wosy/` (10 commands + 2 reference docs)
 4. Add `.devwork/` to global gitignore
 
 Commands are available as `/wosy:command` (namespaced).
@@ -148,6 +148,8 @@ Or skip /intake entirely if no tracking needed.
 | `/status check` | View status only | Console output |
 | `/context` | After context switch | Memory + task record summary |
 | `/pr-review` | After commit/branch | `.devwork/reviews/{ticket}-code-review.md` |
+| `/wosy:conductor` | Reference | Conductor discipline rules (not a workflow command) |
+| `/wosy:models` | Reference | Model assignment guide for dispatch (not a workflow command) |
 
 ---
 
@@ -161,7 +163,7 @@ Compact, persistent progress files in `.devwork/tasks/`. Think "medical chart" �
 
 ```markdown
 # AUTH-001: Add user authentication
-type: feature | size: M | created: 2026-01-15 | updated: 2026-03-10
+type: feature | size: M | created: {YYYY-MM-DD} | updated: {YYYY-MM-DD}
 
 ## Progress
 - [x] research codebase
@@ -241,7 +243,7 @@ type: reference
 ~/.claude/
 ├── CLAUDE.md           # Global configuration (v2.0)
 └── commands/
-    └── wosy/           # 10 workflow commands
+    └── wosy/           # 10 commands + 2 reference docs
         ├── work.md
         ├── phase0.md
         ├── intake.md
@@ -251,7 +253,9 @@ type: reference
         ├── dispatch.md
         ├── status.md
         ├── context.md
-        └── pr-review.md
+        ├── pr-review.md
+        ├── conductor.md  # Conductor discipline (reference)
+        └── models.md     # Model assignment guide (reference)
 ```
 
 ### Per Project
@@ -335,3 +339,21 @@ To update the workflow system:
 ```
 
 Your project-specific `.devwork/` content is preserved.
+
+---
+
+## Templates
+
+The `templates/` directory contains starter files for common artifacts:
+
+| File | Use When |
+|------|----------|
+| `templates/project-CLAUDE.md` | Starting a new project — copy to project root as `CLAUDE.md` |
+| `templates/adr-template.md` | Documenting an architecture decision during a ticket |
+| `templates/decision-log.md` | Initializing the decision index in `.devwork/decisions/` |
+
+---
+
+## Release Notes
+
+See [CHANGELOG.md](CHANGELOG.md) for full version history and upgrade notes from v1.x.

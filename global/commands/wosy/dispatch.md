@@ -2,6 +2,20 @@
 
 Execute tasks from plan using sub-agents. Scales from XS to XL — the conductor dispatches, agents implement.
 
+> Reference: [Conductor Discipline](conductor.md) | [Model Assignment](models.md)
+
+## Model Assignment
+
+| Agent Role | Model | When |
+|-----------|-------|------|
+| Implementer | `sonnet` | Code writing, bug fixes, file edits |
+| Researcher | `sonnet` | Codebase reading, pattern finding |
+| Reporter | `sonnet` | HTML/MD report generation |
+| Reviewer | `opus` | Code review, security audit |
+| Architect | `opus` | Design decisions, ADR writing |
+
+Every Agent tool call **must** specify `model:`. Never leave it implicit.
+
 ## Usage
 ```
 /dispatch
@@ -23,6 +37,12 @@ Execute tasks from plan using sub-agents. Scales from XS to XL — the conductor
 4. Read `.devwork/constitution.md` (conventions for agents)
 5. Read Claude project memory for tooling context
 6. Determine T-shirt size from tasks.md header
+
+**Scope Gate** — before dispatching any agent, verify:
+- [ ] `spec.md` or `plan.md` exists in `.devwork/{type}/{task-id}/`
+- [ ] Plan or spec defines a clear output and definition of done
+
+If neither exists, stop. Run `/spec` or `/plan` first. Dispatching without a scope doc is not allowed.
 
 ### Step 1: Scale by Size
 
@@ -62,16 +82,20 @@ For each unchecked step in the task breakdown:
 
 For each parallelizable set, dispatch agents:
 
-**Each agent gets:**
-- Task details from tasks.md (steps, scope, pass criteria)
+**Each agent gets (handoff contract):**
+- Task type and description
+- Path to scope document (spec.md or plan.md)
+- Task details: steps, scope, pass criteria
 - Constitution.md context (stack, patterns, conventions)
 - Project memory (tooling patterns, connection commands)
-- Specific file paths and expected outcomes
+- Permitted files list (what the agent may read/write)
 - Instruction: **DO NOT commit** — report what was done
 - Instruction: Write result to `.devwork/{type}/{id}/task-{n}-result.md`
+- Instruction: Update `.devwork/{type}/{id}/status.md` with done log on completion
 
 **Agent dispatch rules:**
 - Use `Agent` tool with `subagent_type: "general-purpose"`
+- **Always specify `model:`** — `"sonnet"` for implementation/research, `"opus"` for review/architecture
 - Independent tasks: `run_in_background: true`
 - Dependent tasks: wait for blockers to complete first
 - For XS/S: single foreground agent (simpler, less overhead)
@@ -105,6 +129,17 @@ Options:
 2. Run /work ship (verify + deliver pipeline)
 3. Continue with remaining tasks (if partial)
 ```
+
+**Git-context gate** — only mention commit/PR options if:
+- `.git` directory exists in project root
+- The task produced file changes (not a report-only or research task)
+
+If no `.git` or task is non-code output (HTML report, research doc, etc.) — skip git options entirely.
+
+**Commit policy** (see [conductor.md](conductor.md), roots defined in `~/.claude/CLAUDE.md`):
+- **corporate** (`WORK_ROOT`): present commit message text + PR description as copy-ready blocks. Never run git.
+- **personal** (`PERSONAL_ROOT`): present commit text, offer to execute only if user explicitly approves for this project.
+- **unknown**: ask once per session, default to personal behavior.
 
 Update task record:
 - Check off completed steps in `## Progress`
