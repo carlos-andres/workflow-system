@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-04-16
+
+### Breaking
+
+- Commands moved from `global/commands/wosy/*.md` to `~/.claude/skills/wosy-*/SKILL.md`
+- `conductor.md` is now a rule in `~/.claude/rules/wosy-conductor.md` (always loaded, not a slash command)
+
+### Added
+
+- `code-reviewer` and `security-auditor` agents in `~/.claude/agents/`
+- Mandatory verify gate with agent review in `/work ship`
+- Script-and-defer pattern in dispatch (long-running commands written to `.sh`, never run inline)
+- `debugging`, `tdd`, `verify` skills tracked in repo under `skills/`
+- `--preserve` flag in `install.sh` to keep existing `CLAUDE.md`
+- `templates/.claudeignore` — starter ignore patterns for Claude Code
+- `templates/settings.json` — starter Claude Code settings with sensible defaults
+
+### Changed
+
+- `CLAUDE.md` template reduced from 291 to ~40 lines (agnostic, no stack-specific content)
+- All skills optimized — ~75% line reduction (~3,100 to ~1,030 lines total)
+- `install.sh` rewritten for `skills/agents/rules` structure (replaces `commands/` installer)
+- `templates/project-CLAUDE.md` trimmed to ~30 lines
+
+### Removed
+
+- `superpowers:*` references from all files
+- Standalone command files in `~/.claude/commands/wosy/` (no longer installed)
+
+### Deprecated
+
+- `global/commands/wosy/` directory (legacy, kept in repo for reference only)
+
+---
+
 ## [2.0.1] - 2026-04-07
 
 ### Added

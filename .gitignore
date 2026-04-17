@@ -17,6 +17,11 @@ Thumbs.db
 # Test installations
 .claude-test/
 
+# Override global gitignore: .claude/ IS the product in this repo
+!.claude/
+# But ignore local settings
+.claude/settings.local.json
+
 # Archives
 *.zip
 *.tar.gz

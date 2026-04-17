@@ -43,28 +43,13 @@ Look for `.devwork/_scratch/phase0/` — if found:
 
 ### Step 3: Classify the Task
 
-Ask me ONE question if not obvious from description:
+Ask me ONE question:
 
 > **What type of task is this?**
->
-> **Code tasks (git repo, produces commits):**
-> 1. **Hotfix** — Urgent production fix. Light docs. Straight mode.
-> 2. **Bugfix** — Non-urgent bug. Medium docs. Hybrid mode.
-> 3. **Feature** — New functionality. Full docs. Hybrid or Deep Dive.
-> 4. **Refactor** — Code improvement, no behavior change. Full docs.
-> 5. **Release** — GitFlow freeze, branch promotion, PR consolidation.
->
-> **Output tasks (produces a file/report, no commit required):**
-> 6. **Report** — HTML/MD document generated from code research (e.g., lifecycle report, audit HTML).
-> 7. **Research/Audit** — Investigation producing findings doc or ADR. No code changes.
->
-> **Operational tasks (no code, no commit):**
-> 8. **QA/Testing** — Smoke tests, E2E, manual validation session.
-> 9. **Deployment** — rsync, SSH, artisan commands, production push.
-> 10. **Brainstorm** — Discovery session, ideation, phase0 exploration.
-
-**Auto-classify if obvious**: e.g., "build HTML report of X" → Report, "deploy to production" → Deployment.
-If type is 6-10, conventional commit is **not applicable** — skip git steps entirely.
+> 1. **Hotfix** - Urgent production fix (light docs)
+> 2. **Bugfix** - Non-urgent bug fix (medium docs)
+> 3. **Feature** - New functionality (full docs)
+> 4. **Refactor** - Code improvement (full docs)
 
 ### Step 4: Determine Scope (for Feature/Refactor)
 
@@ -155,7 +140,7 @@ none identified yet
 
 ### Step 8: Initialize status.md
 
-Create initial status file in workspace. **Done log only** — no [TODO] items.
+Create initial status file in workspace:
 
 ```markdown
 # Status: {task-id}
@@ -163,27 +148,35 @@ Create initial status file in workspace. **Done log only** — no [TODO] items.
 > {brief description}
 
 ## Task Info
-- **Type**: {type from classification}
+- **Type**: {hotfix|bugfix|feature|refactor}
 - **Created**: {YYYY-MM-DD}
-- **Mode**: {Deep Dive|Hybrid|Straight}
+- **Scope Clear**: {yes|no}
+- **Work Mode**: {Deep Dive|Hybrid|Straight}
 - **Goal**: {one-line outcome}
-- **Touches**: {system area}
-- **Git**: {yes|no — determines if commit/PR applies}
+- **Touches**: {system area — from Step 4b}
+- **Unknowns**: {list anything not yet verified in code}
 
-## Current
-Workspace created — starting {first step based on mode}
+## Current State
+Just started. Workspace created.
 
-## Done
-(nothing yet)
+## Tasks
+[TODO] Research codebase
+[TODO] {Define requirements - if scope unclear}
+[TODO] Create implementation plan
+[TODO] Implement solution
+[TODO] Test changes
+[TODO] Deliver
+[TODO] Graduate artifacts (if significant)
+
+## Next Action
+{Based on work mode — e.g., "Run `/research` to explore the codebase."}
 
 ## Session Log
 ### {YYYY-MM-DD}
 - Created workspace
-- Task record: .devwork/tasks/{task-id}.md
+- Task record created: .devwork/tasks/{task-id}.md
 {- Phase 0 docs found: referencing .devwork/_scratch/phase0/}
 ```
-
-Pending steps go in `tasks.md` (checkboxes) once created by `/plan`. Not in `status.md`.
 
 ### Step 9: Confirm & Guide
 

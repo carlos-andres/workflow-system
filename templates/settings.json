@@ -1,0 +1,23 @@
+{
+  "env": {
+    "BASH_MAX_OUTPUT_LENGTH": "1000",
+    "BASH_DEFAULT_TIMEOUT_MS": "30000"
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "Glob",
+      "Grep",
+      "Bash(git *)",
+      "Bash(ls *)",
+      "WebSearch"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(sudo *)"
+    ]
+  },
+  "outputStyle": "terse"
+}

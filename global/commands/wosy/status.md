@@ -2,10 +2,6 @@
 
 Update task record and status file with current progress. Essential for context-switching between projects.
 
-> **Status model**: `status.md` is a **done log**, not a task list.
-> It records what has been completed and verified. Pending work lives in `backlog.md` or `tasks.md`.
-> The conductor reads `status.md` to understand where things stand — not what still needs doing.
-
 ## Usage
 ```
 /status
@@ -71,24 +67,24 @@ implementing UserService — blocked on auth middleware refactor
 
 ### Step 4: Update status.md
 
-Update the workspace status file. **Done log only** — no [TODO] items here.
-Pending work belongs in `backlog.md` or `tasks.md`.
-Max 20 lines.
+Update the workspace status file:
 
 ```markdown
 # Status: {task-id}
 
-## Current
-{Single line: what is being worked on right now. Or "complete — ready for /work ship"}
+## Current State
+{Updated description of where we are now}
 
-## Done
-- [x] Research codebase (YYYY-MM-DD)
-- [x] Define requirements (YYYY-MM-DD)
-- [x] Create implementation plan (YYYY-MM-DD)
-- [x] {newly completed step} (TODAY)
+## Tasks
+[DONE] Research codebase
+[DONE] Define requirements
+[DONE] Create implementation plan
+[DONE] {newly completed task}
+[TODO] {remaining tasks}
+[BLOCKED] {blocked items with reason}
 
-## Blocked
-{If applicable: "Waiting for X" — otherwise omit this section}
+## Next Action
+{Clear, specific next step to take}
 
 ## Session Log
 ### {YYYY-MM-DD}
@@ -97,8 +93,6 @@ Max 20 lines.
 ### {TODAY}
 - {new accomplishment}
 ```
-
-If there are pending items, put them in `tasks.md` (checkboxes) or `backlog.md` — not in `status.md`.
 
 ### Step 5: Update tasks.md (if exists)
 
@@ -157,20 +151,16 @@ Next: {next action}
 
 ## Session Handoff
 
-When ending a work session, run `/status` to update the done log. Future-you reads `status.md` to see what's verified, then `tasks.md` to see what's next.
+When ending a work session, run `/status` with a clear "Next Action" so future-you (or Claude) knows exactly where to pick up:
 
-The **task record** (`.devwork/tasks/{id}.md`) holds the next action pointer — keep it updated.
-
-Good task record `## Active`:
+Good:
 ```
-## Active
-implementing validateYear() in YearFilter.php — tests next
+Next Action: Implement the `validateYear()` method in YearFilter.php, then write test.
 ```
 
-Bad task record `## Active`:
+Bad:
 ```
-## Active
-continue working on feature
+Next Action: Continue working on the feature.
 ```
 
 ## Blocked Status

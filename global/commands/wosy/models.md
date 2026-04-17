@@ -2,24 +2,18 @@
 
 Use this as the shared model routing guide across all wosy commands.
 
-## Instructions
-
-Use this reference when dispatching agents via `/dispatch`. Always specify `model:` explicitly — never leave it implicit. Use the generic aliases `"opus"` and `"sonnet"` — Claude Code resolves these to the latest available version automatically.
-
 ## Model Routing
 
 | Role / Task | Model | Reason |
 |-------------|-------|--------|
-| Planning, spec, ADR writing | `opus` (latest) | Needs reasoning depth, avoids shortcuts |
-| Architecture decisions | `opus` (latest) | Trade-off analysis, long-horizon thinking |
-| Code review, security audit, PR review | `opus` (latest) | Needs to catch subtle issues |
-| Implementation, coding, bug fixes | `sonnet` (latest) | Fast, accurate, code-native |
-| Research, codebase exploration | `sonnet` (latest) | Fast reading, pattern recognition |
-| Report generation (HTML/MD output) | `sonnet` (latest) | Structured output, no deep reasoning needed |
-| QA, smoke testing, deployment | `sonnet` (latest) | Procedural execution |
-| Conductor window (default) | `sonnet` (latest) | Orchestration, not reasoning-heavy |
-
-> **Note:** `"opus"` and `"sonnet"` are generic aliases. Claude Code resolves them to the latest available model version at dispatch time — no hardcoded version strings needed.
+| Planning, spec, ADR writing | `claude-opus-4-6` | Needs reasoning depth, avoids shortcuts |
+| Architecture decisions | `claude-opus-4-6` | Trade-off analysis, long-horizon thinking |
+| Code review, security audit, PR review | `claude-opus-4-6` | Needs to catch subtle issues |
+| Implementation, coding, bug fixes | `claude-sonnet-4-6` | Fast, accurate, code-native |
+| Research, codebase exploration | `claude-sonnet-4-6` | Fast reading, pattern recognition |
+| Report generation (HTML/MD output) | `claude-sonnet-4-6` | Structured output, no deep reasoning needed |
+| QA, smoke testing, deployment | `claude-sonnet-4-6` | Procedural execution |
+| Conductor window (default) | `claude-sonnet-4-6` | Orchestration, not reasoning-heavy |
 
 ## Summary Rule
 
@@ -30,7 +24,7 @@ Use this reference when dispatching agents via `/dispatch`. Always specify `mode
 
 When `/dispatch` sends an agent, the prompt must specify the model:
 ```
-Agent tool → model: "opus" or model: "sonnet"
+Agent tool → model: "opus" or "sonnet"
 ```
 
 When working in plan mode (Claude Code), the plan mode automatically uses the best available model for planning. Implementation steps dispatched via `/dispatch` should use Sonnet.
@@ -38,11 +32,11 @@ When working in plan mode (Claude Code), the plan mode automatically uses the be
 ## Quick Reference
 
 ```
-/plan      → opus  (architect-level thinking)
-/spec      → opus  (requirements precision)
-/pr-review → opus  (reviewer role)
-/research  → sonnet (fast explorer)
-/dispatch  → sonnet for implementers, opus for review agents
-/phase0    → opus  (discovery + design)
-/work      → sonnet (routing + coordination)
+/plan      → Opus  (architect-level thinking)
+/spec      → Opus  (requirements precision)
+/pr-review → Opus  (reviewer role)
+/research  → Sonnet (fast explorer)
+/dispatch  → Sonnet for implementers, Opus for review agents
+/phase0    → Opus  (discovery + design)
+/work      → Sonnet (routing + coordination)
 ```

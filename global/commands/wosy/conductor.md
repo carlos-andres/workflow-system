@@ -1,8 +1,7 @@
 # Conductor Discipline
 
-## Instructions
-
-Rules for keeping the main window clean and architectural. The conductor orchestrates — it never implements. Read this before dispatching any agent.
+Rules for keeping the main window clean and architectural.
+The conductor orchestrates — it never implements.
 
 ## The 5 Rules
 
