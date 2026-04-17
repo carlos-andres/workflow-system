@@ -300,7 +300,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned
 
-- Language-specific constitution templates (Python, Ruby, Go)
-- VS Code extension for command palette integration
-- Metrics tracking for workflow efficiency
+- hooks/ support — pre/post tool-use validation scripts (validate-bash.sh, lint-on-save)
+- .mcp.json template — starter MCP integration config for team sharing
+- Language-specific constitution templates
 - Cross-project task record dashboard

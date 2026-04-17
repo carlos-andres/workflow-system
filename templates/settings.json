@@ -19,5 +19,13 @@
       "Bash(sudo *)"
     ]
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [".claude/hooks/validate-bash.sh"]
+      }
+    ]
+  },
   "outputStyle": "terse"
 }

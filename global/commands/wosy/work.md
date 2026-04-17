@@ -1,3 +1,9 @@
+> **DEPRECATED (v3.0)** — Legacy v2.0 command file kept for reference only.  
+> Active version: `~/.claude/skills/wosy-work/SKILL.md`  
+> See [CHANGELOG.md](../../../CHANGELOG.md) for migration details.
+
+---
+
 # /work - Smart Router & Conductor
 
 The primary entrypoint for the workflow system. Reads project state, auto-detects phase, dispatches the right command. The main window is the **conductor** — it holds context and orchestrates, never implements.

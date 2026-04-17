@@ -1,3 +1,9 @@
+> **DEPRECATED (v3.0)** — Legacy v2.0 command file kept for reference only.  
+> Active version: `~/.claude/skills/wosy-context/SKILL.md`  
+> See [CHANGELOG.md](../../../CHANGELOG.md) for migration details.
+
+---
+
 # /context - Quick Resume After Context Switch
 
 Fast, read-only state summary to resume work after switching contexts. Reads task records and project memory first.

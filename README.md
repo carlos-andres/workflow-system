@@ -29,8 +29,10 @@ A plugin that orchestrates development workflows inside Claude Code. One smart r
 ├── agents/
 │   ├── code-reviewer.md               # Code review agent
 │   └── security-auditor.md            # Security audit agent
-└── rules/
-    └── wosy-conductor.md              # Conductor discipline (always-on)
+├── rules/
+│   └── wosy-conductor.md              # Conductor discipline (always-on)
+└── hooks/
+    └── validate-bash.sh               # Pre-tool-use validation
 ```
 
 ## Installation
@@ -86,6 +88,7 @@ Cross-cutting: `/work` (router), `/context` (resume), `/status` (progress).
 - **T-shirt sizing** — `/plan` scores XS-XL by file count, coupling, unknowns. Size determines dispatch strategy.
 - **Script-and-defer** — Long-running commands written to `.sh` scripts, handed to user. Never executed inline.
 - **Three-layer memory** — Project memory (permanent), task records (per-task), Tasks API (in-session).
+- **Hooks** — Pre-tool-use scripts that block dangerous commands. Event-driven, not slash commands.
 
 ## Philosophy
 

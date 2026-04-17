@@ -1,3 +1,9 @@
+> **DEPRECATED (v3.0)** — Legacy v2.0 command file kept for reference only.  
+> Active version: `~/.claude/skills/wosy-models/SKILL.md`  
+> See [CHANGELOG.md](../../../CHANGELOG.md) for migration details.
+
+---
+
 # Model Assignment Reference
 
 Use this as the shared model routing guide across all wosy commands.

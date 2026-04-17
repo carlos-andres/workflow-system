@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "_readme": "MCP server configs — shared via git. Remove this key. See https://docs.anthropic.com/en/docs/agents-and-tools/mcp",
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": ""
+      }
+    }
+  }
+}

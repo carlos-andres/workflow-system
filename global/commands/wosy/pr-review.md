@@ -1,3 +1,9 @@
+> **DEPRECATED (v3.0)** — Legacy v2.0 command file kept for reference only.  
+> Active version: `~/.claude/skills/wosy-pr-review/SKILL.md`  
+> See [CHANGELOG.md](../../../CHANGELOG.md) for migration details.
+
+---
+
 # /pr-review - Code Review from Diff
 
 Analyze a commit or branch diff against codebase patterns and constitution.md. Outputs a structured findings report.

@@ -16,7 +16,7 @@ NEVER auto-commit. Conventional commits via `/work ship`: feat/fix/refactor/chor
 # Workflow
 Projects use `.devwork/` (gitignored) for tasks/, artifacts, constitution.md.
 Conductor pattern: main window = conductor (context + dispatch), sub-agents do ALL implementation.
-Skills handle all `/slash` commands — invoke the matching `wosy:*` skill.
+Skills handle all `/slash` commands — invoke as `/command` directly (no namespace).
 Wosy priority when in active workflow.
 
 # Compaction

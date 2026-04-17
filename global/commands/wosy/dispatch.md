@@ -1,3 +1,9 @@
+> **DEPRECATED (v3.0)** — Legacy v2.0 command file kept for reference only.  
+> Active version: `~/.claude/skills/wosy-dispatch/SKILL.md`  
+> See [CHANGELOG.md](../../../CHANGELOG.md) for migration details.
+
+---
+
 # /dispatch - Task Orchestration (Always-On)
 
 Execute tasks from plan using sub-agents. Scales from XS to XL — the conductor dispatches, agents implement.

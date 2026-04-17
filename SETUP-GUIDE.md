@@ -1,13 +1,16 @@
-# Claude Code Workflow System - Setup Guide
+# Claude Code Workflow System — Setup Guide
 
 ## Overview
 
-This system provides a structured workflow for working with Claude Code:
+v3.0 ships skills, agents, and rules — replacing the old namespaced commands architecture.
+
 - **Smart router** (`/work`) auto-detects phase and suggests next command
 - **Task records** in `.devwork/tasks/` persist across sessions
 - **Project memory** saves tooling patterns for automatic reuse
-- **Conductor pattern** — main window orchestrates, sub-agents implement
-- **Industry-standard formats** (MADR for ADRs, spec-kit style for specs)
+- **Conductor rule** — always-on discipline, not a slash command
+- **Agent review gate** — code-reviewer + security-auditor agents run on `/work ship`
+- **Tool skills** — debugging, tdd, verify available in every project
+- **Hooks** — pre-tool-use validation blocks dangerous bash commands
 
 ---
 
@@ -16,42 +19,64 @@ This system provides a structured workflow for working with Claude Code:
 ### Quick Install
 
 ```bash
-# Make the script executable
 chmod +x install.sh
-
-# Run the installer
 ./install.sh
 ```
 
-The installer will:
-1. Clean ALL existing custom commands (fresh start)
-2. Install enhanced `~/.claude/CLAUDE.md` (v2.0)
-3. Install 12 files in `~/.claude/commands/wosy/` (10 commands + 2 reference docs)
-4. Add `.devwork/` to global gitignore
+Flags:
+- `--preserve` — skip overwriting `~/.claude/CLAUDE.md` (keep your customizations)
+- `--yes` / `-y` — skip all interactive prompts
 
-Commands are available as `/wosy:command` (namespaced).
+### What the Installer Does (11 steps)
 
-### Manual Install (if preferred)
+1. **Preflight** — verifies source dirs exist
+2. **Backup** — backs up existing wosy-* skills, tool skills, agents, rules, CLAUDE.md as `.bak`
+3. **Create dirs** — `~/.claude/skills/`, `~/.claude/agents/`, `~/.claude/rules/`
+4. **Install 14 skills** — 11 wosy + 3 tool skills into `~/.claude/skills/*/SKILL.md`
+5. **Install 2 agents** — code-reviewer, security-auditor into `~/.claude/agents/`
+6. **Install 1 rule** — wosy-conductor into `~/.claude/rules/`
+7. **Install hooks** — validate-bash.sh into `~/.claude/hooks/` (chmod +x)
+8. **Install CLAUDE.md** — `global/CLAUDE.md` → `~/.claude/CLAUDE.md` (skipped with `--preserve`)
+9. **Configure global gitignore** — adds `.devwork/` to `~/.gitignore_global`
+10. **Legacy cleanup** — offers to remove `~/.claude/commands/wosy/` if found
+11. **Verify installation** — confirms all files landed correctly
 
-1. Copy `global/CLAUDE.md` to `~/.claude/CLAUDE.md`
-2. Copy all files from `global/commands/wosy/` to `~/.claude/commands/wosy/`
-3. Add `.devwork/` to `~/.gitignore_global`:
-   ```bash
-   echo ".devwork/" >> ~/.gitignore_global
-   git config --global core.excludesfile ~/.gitignore_global
-   ```
+### What Gets Installed
 
-### Upgrading from v1.x
+```
+~/.claude/
+├── CLAUDE.md                          # Global config (~40 lines, stack-agnostic)
+├── skills/
+│   ├── wosy-work/SKILL.md             # Smart router + setup + ship
+│   ├── wosy-intake/SKILL.md           # Task classification + workspace creation
+│   ├── wosy-research/SKILL.md         # Codebase exploration + memory detection
+│   ├── wosy-spec/SKILL.md             # Requirements interview → spec.md
+│   ├── wosy-plan/SKILL.md             # Implementation plan + T-shirt sizing
+│   ├── wosy-dispatch/SKILL.md         # Task orchestration (XS→XL)
+│   ├── wosy-status/SKILL.md           # Progress tracking + task records
+│   ├── wosy-context/SKILL.md          # Quick resume after context switch
+│   ├── wosy-phase0/SKILL.md           # Greenfield discovery
+│   ├── wosy-pr-review/SKILL.md        # Code review from diff (3-pass)
+│   ├── wosy-models/SKILL.md           # Model assignment guide
+│   ├── debugging/SKILL.md             # Systematic root-cause debugging
+│   ├── tdd/SKILL.md                   # Red-green-refactor + framework detection
+│   └── verify/SKILL.md                # Evidence-based verification
+├── agents/
+│   ├── code-reviewer.md               # Bugs/logic/edge cases (dispatched by /work ship)
+│   └── security-auditor.md            # OWASP Top 10 audit (dispatched by /work ship)
+├── rules/
+│   └── wosy-conductor.md              # Conductor discipline (always-on)
+└── hooks/
+    └── validate-bash.sh               # Blocks dangerous commands (pre-tool-use)
+```
 
-Run `./install.sh` — it removes old commands and installs the v2.0 set. Your project `.devwork/` content is preserved. The merged commands (constitution, project-init, rebuild, verify, deliver, graduate, archive) are replaced by `/work setup` and `/work ship`.
+### Upgrading from v2.x
+
+Run `./install.sh` — it backs up existing commands, installs skills/agents/rules, then offers to remove `~/.claude/commands/wosy/`. Project `.devwork/` content is preserved. Old `/wosy:command` syntax no longer works — use `/command` directly.
 
 ---
 
 ## Per-Project Setup
-
-After installing globally, set up each project with **one command**:
-
-### Run Setup
 
 Open Claude Code in your project and run:
 
@@ -59,51 +84,37 @@ Open Claude Code in your project and run:
 /work setup
 ```
 
-This single command:
-- Creates `.devwork/` directory structure (including `tasks/`)
-- Scans project for tech stack, patterns, conventions
-- Generates `.devwork/constitution.md` (AI coding guidelines)
-- Creates/updates project `CLAUDE.md`
-- Detects tooling patterns and offers to save to project memory
-- Verifies `.devwork/` is in `.gitignore`
+This creates `.devwork/` structure, scans the tech stack, generates `constitution.md`, creates/updates project `CLAUDE.md`, detects tooling patterns, and verifies `.devwork/` is gitignored.
 
-### Setup Flags
+Setup flags:
+- `/work setup` — full setup (first time)
+- `/work setup update` — re-scan, preserve manual notes
+- `/work setup reset` — fresh start (backs up existing)
+- `/work setup repair` — fix missing directories/files only
 
-```bash
-/work setup              # Full setup (first time)
-/work setup update       # Re-scan project, preserve manual notes
-/work setup reset        # Fresh start (backs up existing)
-/work setup repair       # Fix missing directories/files only
-```
-
-### After Setup
-
-1. Review `.devwork/constitution.md` — verify detected patterns are correct
+After setup:
+1. Review `.devwork/constitution.md` — verify detected patterns
 2. Add project-specific knowledge to "Manual Notes" section
 3. Add fragile areas to "Do NOT Touch" section
-4. Start working: `/intake {TICKET} "description"` or just `/work`
+4. Start: `/intake {TICKET} "description"` or just `/work`
 
 ---
 
 ## Workflow Usage
 
-### Starting a New Task
+### Starting a Task
 
 ```
 /intake AUTH-001 "Add user authentication"
 ```
 
-Claude will ask:
-1. Task type? (Hotfix / Bugfix / Feature / Refactor)
-2. Scope clear? (Yes / No)
-
-Then creates:
-- Workspace in `.devwork/feature/AUTH-001/` or `.devwork/hotfix/AUTH-001/`
-- Task record in `.devwork/tasks/AUTH-001.md`
+Claude classifies type (Hotfix / Bugfix / Feature / Refactor), confirms scope, then creates:
+- Workspace → `.devwork/feature/AUTH-001/`
+- Task record → `.devwork/tasks/AUTH-001.md`
 
 ### Smart Router
 
-After `/intake`, just run `/work` — it reads your project state and suggests the next command:
+After `/intake`, run `/work` — it reads project state and recommends next step:
 
 ```
 /work
@@ -123,7 +134,7 @@ After `/intake`, just run `/work` — it reads your project state and suggests t
 **Hybrid (existing codebase — most common):**
 ```
 /intake → /research → /plan → /dispatch → /work ship
-Skip /spec if requirements clear. Use /status between sessions.
+Skip /spec if requirements are clear. Use /status between sessions.
 ```
 
 **Straight (hotfix, clear scope):**
@@ -134,33 +145,44 @@ Or skip /intake entirely if no tracking needed.
 
 ### Command Reference
 
-| Command | When to Use | Output |
-|---------|-------------|--------|
-| `/work` | Anytime — auto-detects phase | Recommendation + execute |
-| `/work setup` | First time + updates | Constitution + CLAUDE.md |
-| `/work ship` | Task complete | Verify → deliver → graduate → archive |
-| `/intake {ID} "desc"` | Starting task | Workspace + task record |
-| `/research` | Before coding | `research.md` + tooling detection |
-| `/spec` | Unclear requirements | `spec.md` (working draft) |
-| `/plan` | Before implementing | `plan.md` + `tasks.md` + sizing |
-| `/dispatch` | Execute plan | Sub-agent orchestration (XS→XL) |
-| `/status` | After progress | Updates task record + `status.md` |
-| `/status check` | View status only | Console output |
-| `/context` | After context switch | Memory + task record summary |
-| `/pr-review` | After commit/branch | `.devwork/reviews/{ticket}-code-review.md` |
-| `/wosy:conductor` | Reference | Conductor discipline rules (not a workflow command) |
-| `/wosy:models` | Reference | Model assignment guide for dispatch (not a workflow command) |
+**Workflow skills** (slash commands):
+- `/work` — auto-detect phase, recommend next command
+- `/work setup` — project setup: constitution + CLAUDE.md
+- `/work ship` — verify → agent review → deliver → graduate → archive
+- `/intake {ID} "desc"` — classify task, create workspace + task record
+- `/research` — codebase exploration + tooling detection
+- `/spec` — requirements interview → spec.md
+- `/plan` — implementation plan + T-shirt sizing
+- `/dispatch` — sub-agent orchestration (XS→XL)
+- `/status` — update task record + status.md
+- `/status check` — view status only (no write)
+- `/context` — quick resume after context switch
+- `/pr-review` — code review from diff, 3-pass analysis
+- `/models` — model assignment reference
+
+**Tool skills** (available in every project):
+- `/debugging` — systematic root-cause analysis
+- `/tdd` — red-green-refactor cycle with framework auto-detection
+- `/verify` — evidence-based verification before claiming done
+
+**Rules** (always-on, not slash commands):
+- `wosy-conductor.md` — 5 rules: never implement in main window, 5-line context budget, handoff contract, done-log-only returns, model assignment at dispatch time. Includes script-and-defer pattern.
+
+### /work ship — Agent Review Gate (new in v3.0)
+
+`/work ship` now includes an agent review gate before delivery:
+
+**Gate 1: Agent Review** — dispatches code-reviewer + security-auditor agents (both Opus). Review must pass before any delivery proceeds.
+
+Full sequence: verify → agent review → deliver → graduate → archive.
 
 ---
 
 ## Task Records
 
-### What Are They?
+Compact, persistent progress files in `.devwork/tasks/`. Think "medical chart" — just enough to know status at a glance.
 
-Compact, persistent progress files in `.devwork/tasks/`. Think "medical chart" — just enough to know the patient's status at a glance.
-
-### Format
-
+Format:
 ```markdown
 # AUTH-001: Add user authentication
 type: feature | size: M | created: {YYYY-MM-DD} | updated: {YYYY-MM-DD}
@@ -182,43 +204,32 @@ implementing auth middleware
 .devwork/feature/AUTH-001/
 ```
 
-### Rules
-
-- **Max 30 lines** — if longer, it's documentation, not a chart
+Rules:
+- **Max 30 lines** — longer means it's docs, not a chart
 - **Auto-created** by `/intake`
 - **Auto-updated** by every wosy command
 - **Human-editable** — add/reorder steps manually
 - **Read-first** — `/work`, `/context`, `/dispatch` read these before acting
 - **No tooling** — tooling goes in project memory
 
-### Auto-Numbering
-
-- Provide an ID: `AUTH-001` → `.devwork/tasks/AUTH-001.md`
-- No ID: auto-increment → `.devwork/tasks/001.md`, `002.md`, `003.md`
+Auto-numbering: provide `AUTH-001` → `AUTH-001.md`; no ID → auto-increment `001.md`, `002.md`.
 
 ---
 
 ## Project Memory
 
-### What Gets Saved
+Patterns detected during setup/research/implementation, saved to `.devwork/`:
 
-| Pattern | Example | Memory File |
-|---------|---------|-------------|
-| DB connections | `mysql --defaults-group-suffix=-local` | `tooling_database.md` |
-| SSH connections | `ssh tower` | `tooling_ssh.md` |
-| Environment | .test domains, PHP versions | `tooling_environment.md` |
-| CLI patterns | Custom scripts, flags | `tooling_cli.md` |
-| API endpoints | Internal APIs, auth | `tooling_api.md` |
-| Git conventions | Branch naming, prefixes | `tooling_git.md` |
+- **DB connections** → `tooling_database.md`
+- **SSH connections** → `tooling_ssh.md`
+- **Environment** → `tooling_environment.md`
+- **CLI patterns** → `tooling_cli.md`
+- **API endpoints** → `tooling_api.md`
+- **Git conventions** → `tooling_git.md`
 
-### When It's Detected
+When detected: during `/work setup` (auto-scan), during `/research` (code exploration), during implementation (agents surface working commands).
 
-1. During `/work setup` — auto-detect from config files
-2. During `/research` — when exploring code reveals patterns
-3. During implementation — when agents discover working commands
-
-### Memory File Format
-
+Memory file format:
 ```markdown
 ---
 name: database-connection
@@ -230,8 +241,6 @@ type: reference
 - Command: `mysql --no-defaults --defaults-group-suffix=-local`
 - Why this way: multiple connections configured, defaults picks wrong one
 - NEVER use: `mysql -uroot -p` or inline credentials
-- Sandbox: requires dangerouslyDisableSandbox for socket access
-- Verify: `mysql --no-defaults --defaults-group-suffix=-local -e "SELECT 1"`
 ```
 
 ---
@@ -239,121 +248,79 @@ type: reference
 ## Folder Structure
 
 ### Global (`~/.claude/`)
-```
-~/.claude/
-├── CLAUDE.md           # Global configuration (v2.0)
-└── commands/
-    └── wosy/           # 10 commands + 2 reference docs
-        ├── work.md
-        ├── phase0.md
-        ├── intake.md
-        ├── research.md
-        ├── spec.md
-        ├── plan.md
-        ├── dispatch.md
-        ├── status.md
-        ├── context.md
-        ├── pr-review.md
-        ├── conductor.md  # Conductor discipline (reference)
-        └── models.md     # Model assignment guide (reference)
-```
 
-### Per Project
+See "What Gets Installed" above — skills/agents/rules replace the old `commands/wosy/` layout.
+
+### Per Project (unchanged from v2.x)
+
 ```
 project/
-├── CLAUDE.md                    # Project-specific rules
-└── .devwork/                    # All working artifacts (gitignored)
-    ├── constitution.md          # Tech stack, conventions
-    ├── tasks/                   # Task records (persistent)
-    │   ├── 001.md
-    │   └── AUTH-001.md
-    ├── decisions/               # Graduated ADRs
-    ├── specs/                   # Graduated specs
-    ├── feature/                 # Active feature work
-    │   └── AUTH-001/
-    │       ├── status.md
-    │       ├── research.md
-    │       ├── spec.md
-    │       ├── plan.md
-    │       └── tasks.md
-    ├── hotfix/                  # Active hotfix work
-    ├── _archive/                # Completed tickets
-    └── _scratch/                # Phase 0 temporary notes
+├── CLAUDE.md
+└── .devwork/
+    ├── constitution.md
+    ├── tasks/
+    ├── decisions/
+    ├── specs/
+    ├── feature/
+    ├── hotfix/
+    ├── _archive/
+    └── _scratch/
 ```
+
+---
+
+## Templates
+
+Files in `templates/`:
+- `project-CLAUDE.md` — copy to project root as `CLAUDE.md` (~30 lines)
+- `adr-template.md` — architecture decision records (MADR format)
+- `decision-log.md` — decision index for `.devwork/decisions/`
+- `settings.json` — NEW: starter Claude Code settings (permissions, terse output)
+- `.claudeignore` — NEW: starter ignore patterns (node_modules, vendor, dist, lock files)
+- `.mcp.json` — NEW: starter MCP integration config (GitHub server example)
 
 ---
 
 ## Tips
 
 ### Context Switching
-When switching projects:
-1. Run `/status` to save where you are
-2. Make sure "Next Action" is specific
-3. When returning: run `/work` or `/context` — reads task records + memory automatically
+1. Run `/status` to save where you are — make "Next Action" specific
+2. When returning: run `/work` or `/context` — reads task records + memory automatically
 
-### Quick Updates
-```
-/status "completed validation logic"    # Quick done
-/status blocked "waiting for API keys"  # Mark blocked
-/status check                           # View only
-```
+### Quick Status Updates
+- `/status "completed validation logic"` — quick done
+- `/status blocked "waiting for API keys"` — mark blocked
+- `/status check` — view only
 
 ### Dispatch Sizing
-| Size | Behavior |
-|------|----------|
-| XS | Single inline agent |
-| S | Single agent with tracking |
-| M | 2-3 parallel agents |
-| L | Parallel + verification |
-| XL | Split into sub-tasks first |
+- **XS** → single inline agent
+- **S** → single agent with tracking
+- **M** → 2-3 parallel agents
+- **L** → parallel + verification
+- **XL** → split into sub-tasks first
 
 ---
 
 ## Troubleshooting
 
-### Commands not working
-1. Check `~/.claude/commands/wosy/` exists
-2. Check command files have `.md` extension
-3. Restart Claude Code
+### Skills not working
+1. Check `~/.claude/skills/` exists with `*/SKILL.md` files
+2. Restart Claude Code
+3. Skills invoke as `/command` — no namespace (old `/wosy:command` no longer works)
 
-### Old commands still showing
-The v2.0 installer removes old flat aliases. If you see old commands (constitution, verify, deliver, etc.), re-run `./install.sh`.
+### Still seeing old `/wosy:*` commands
+Re-run `./install.sh` — the legacy cleanup step offers to remove `~/.claude/commands/wosy/`.
 
-### .devwork/ not ignored
+### `.devwork/` not ignored
 1. Check `~/.gitignore_global` contains `.devwork/`
 2. Run: `git config --global core.excludesfile ~/.gitignore_global`
-3. Or add `.devwork/` to project's `.gitignore`
+3. Or add `.devwork/` to the project's `.gitignore`
 
 ### Task records not found
-Run `/intake` to create a task record, or create one manually in `.devwork/tasks/`.
-
----
-
-## Updating
-
-To update the workflow system:
-
-```bash
-# Re-run installer (will overwrite commands)
-./install.sh
-```
-
-Your project-specific `.devwork/` content is preserved.
-
----
-
-## Templates
-
-The `templates/` directory contains starter files for common artifacts:
-
-| File | Use When |
-|------|----------|
-| `templates/project-CLAUDE.md` | Starting a new project — copy to project root as `CLAUDE.md` |
-| `templates/adr-template.md` | Documenting an architecture decision during a ticket |
-| `templates/decision-log.md` | Initializing the decision index in `.devwork/decisions/` |
+Run `/intake` to create one, or create manually in `.devwork/tasks/`.
 
 ---
 
 ## Release Notes
 
-See [CHANGELOG.md](CHANGELOG.md) for full version history and upgrade notes from v1.x.
+See [CHANGELOG.md](CHANGELOG.md) for full version history and upgrade notes.

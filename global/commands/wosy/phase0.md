@@ -1,3 +1,9 @@
+> **DEPRECATED (v3.0)** — Legacy v2.0 command file kept for reference only.  
+> Active version: `~/.claude/skills/wosy-phase0/SKILL.md`  
+> See [CHANGELOG.md](../../../CHANGELOG.md) for migration details.
+
+---
+
 # `/phase0` Command Specification — Final
 
 > **Phase 0: From Idea to Intake-Ready Documentation**
@@ -588,7 +594,7 @@ If the user wants to run Phase 0 for multiple ideas:
 ## 10. Implementation Notes
 
 **As a Claude Code slash command:**
-- Single file: `~/.claude/commands/phase0.md` (global) or in the workflow-system repo under `global/commands/phase0.md`
+- Single file: `~/.claude/skills/wosy-phase0/SKILL.md` (global) or in the workflow-system repo under `global/commands/wosy/phase0.md`
 - Contains all behavior instructions, document templates, and interview logic
 - Uses `$ARGUMENTS` for the optional initial idea description
 - No external dependencies — no npm, no scripts, just a markdown prompt

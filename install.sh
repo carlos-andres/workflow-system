@@ -8,6 +8,7 @@
 # - 14 skills (11 wosy + 3 tool skills)
 # - 2 agents (code-reviewer, security-auditor)
 # - 1 rule (wosy-conductor)
+# - hooks (validate-bash.sh)
 # - Global CLAUDE.md (unless --preserve)
 # - .devwork/ in global gitignore
 #
@@ -35,6 +36,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE_SKILLS="$SCRIPT_DIR/.claude/skills"
 SOURCE_AGENTS="$SCRIPT_DIR/.claude/agents"
 SOURCE_RULES="$SCRIPT_DIR/.claude/rules"
+SOURCE_HOOKS="$SCRIPT_DIR/.claude/hooks"
 SOURCE_CLAUDE_MD="$SCRIPT_DIR/global/CLAUDE.md"
 GLOBAL_GITIGNORE="$HOME/.gitignore_global"
 
@@ -42,6 +44,7 @@ GLOBAL_GITIGNORE="$HOME/.gitignore_global"
 SKILLS_INSTALLED=0
 AGENTS_INSTALLED=0
 RULES_INSTALLED=0
+HOOKS_INSTALLED=0
 CLAUDE_MD_INSTALLED=0
 
 # Flags
@@ -116,28 +119,35 @@ preflight() {
 
     if [ ! -d "$SOURCE_SKILLS" ]; then
         print_error "Skills source not found: $SOURCE_SKILLS"
-        ((missing++))
+        missing=$((missing + 1))
     else
         print_success "Skills source found"
     fi
 
     if [ ! -d "$SOURCE_AGENTS" ]; then
         print_error "Agents source not found: $SOURCE_AGENTS"
-        ((missing++))
+        missing=$((missing + 1))
     else
         print_success "Agents source found"
     fi
 
     if [ ! -d "$SOURCE_RULES" ]; then
         print_error "Rules source not found: $SOURCE_RULES"
-        ((missing++))
+        missing=$((missing + 1))
     else
         print_success "Rules source found"
     fi
 
+    if [ ! -d "$SOURCE_HOOKS" ]; then
+        print_error "Hooks source not found: $SOURCE_HOOKS"
+        missing=$((missing + 1))
+    else
+        print_success "Hooks source found"
+    fi
+
     if [ ! -f "$SOURCE_CLAUDE_MD" ]; then
         print_error "CLAUDE.md source not found: $SOURCE_CLAUDE_MD"
-        ((missing++))
+        missing=$((missing + 1))
     else
         print_success "CLAUDE.md source found"
     fi
@@ -176,7 +186,7 @@ backup_existing() {
             print_step "Backing up skill $name..."
             /bin/cp -R "$skill_dir" "${skill_dir}.bak"
             print_success "$name -> ${name}.bak"
-            ((backed_up++))
+            backed_up=$((backed_up + 1))
         fi
     done
 
@@ -186,7 +196,7 @@ backup_existing() {
             print_step "Backing up skill $tool_skill..."
             /bin/cp -R "$CLAUDE_DIR/skills/$tool_skill" "$CLAUDE_DIR/skills/${tool_skill}.bak"
             print_success "$tool_skill -> ${tool_skill}.bak"
-            ((backed_up++))
+            backed_up=$((backed_up + 1))
         fi
     done
 
@@ -197,7 +207,7 @@ backup_existing() {
             print_step "Backing up agent $name..."
             /bin/cp "$agent_file" "${agent_file}.bak"
             print_success "$name -> ${name}.bak"
-            ((backed_up++))
+            backed_up=$((backed_up + 1))
         fi
     done
 
@@ -208,7 +218,18 @@ backup_existing() {
             print_step "Backing up rule $name..."
             /bin/cp "$rule_file" "${rule_file}.bak"
             print_success "$name -> ${name}.bak"
-            ((backed_up++))
+            backed_up=$((backed_up + 1))
+        fi
+    done
+
+    # Backup existing hook files
+    for hook_file in "$CLAUDE_DIR"/hooks/*.sh; do
+        if [ -f "$hook_file" ]; then
+            local name=$(basename "$hook_file")
+            print_step "Backing up hook $name..."
+            /bin/cp "$hook_file" "${hook_file}.bak"
+            print_success "$name -> ${name}.bak"
+            backed_up=$((backed_up + 1))
         fi
     done
 
@@ -234,6 +255,9 @@ create_structure() {
 
     mkdir -p "$CLAUDE_DIR/rules"
     print_success "~/.claude/rules/"
+
+    mkdir -p "$CLAUDE_DIR/hooks"
+    print_success "~/.claude/hooks/"
 }
 
 #-------------------------------------------------------------------------------
@@ -264,7 +288,7 @@ install_skills() {
             mkdir -p "$CLAUDE_DIR/skills/$skill"
             /bin/cp -R "$SOURCE_SKILLS/$skill/." "$CLAUDE_DIR/skills/$skill/"
             print_success "  $skill"
-            ((SKILLS_INSTALLED++))
+            SKILLS_INSTALLED=$((SKILLS_INSTALLED + 1))
         else
             print_error "  $skill — source not found: $SOURCE_SKILLS/$skill"
         fi
@@ -283,7 +307,7 @@ install_skills() {
             mkdir -p "$CLAUDE_DIR/skills/$skill"
             /bin/cp -R "$SOURCE_SKILLS/$skill/." "$CLAUDE_DIR/skills/$skill/"
             print_success "  $skill"
-            ((SKILLS_INSTALLED++))
+            SKILLS_INSTALLED=$((SKILLS_INSTALLED + 1))
         else
             print_error "  $skill — source not found: $SOURCE_SKILLS/$skill"
         fi
@@ -308,7 +332,7 @@ install_agents() {
         if [ -f "$SOURCE_AGENTS/$agent" ]; then
             /bin/cp "$SOURCE_AGENTS/$agent" "$CLAUDE_DIR/agents/$agent"
             print_success "  $agent"
-            ((AGENTS_INSTALLED++))
+            AGENTS_INSTALLED=$((AGENTS_INSTALLED + 1))
         else
             print_error "  $agent — source not found: $SOURCE_AGENTS/$agent"
         fi
@@ -332,13 +356,37 @@ install_rules() {
         if [ -f "$SOURCE_RULES/$rule" ]; then
             /bin/cp "$SOURCE_RULES/$rule" "$CLAUDE_DIR/rules/$rule"
             print_success "  $rule"
-            ((RULES_INSTALLED++))
+            RULES_INSTALLED=$((RULES_INSTALLED + 1))
         else
             print_error "  $rule — source not found: $SOURCE_RULES/$rule"
         fi
     done
 
     print_success "Installed $RULES_INSTALLED rules"
+}
+
+#-------------------------------------------------------------------------------
+# Step 6b: Install Hooks
+#-------------------------------------------------------------------------------
+
+install_hooks() {
+    print_header "Step 6b: Installing Hooks"
+
+    for hook_file in "$SOURCE_HOOKS"/*.sh; do
+        if [ -f "$hook_file" ]; then
+            local name=$(basename "$hook_file")
+            /bin/cp "$hook_file" "$CLAUDE_DIR/hooks/$name"
+            chmod +x "$CLAUDE_DIR/hooks/$name"
+            print_success "  $name"
+            HOOKS_INSTALLED=$((HOOKS_INSTALLED + 1))
+        fi
+    done
+
+    if [ "$HOOKS_INSTALLED" -eq 0 ]; then
+        print_info "No hook scripts found in source"
+    else
+        print_success "Installed $HOOKS_INSTALLED hooks"
+    fi
 }
 
 #-------------------------------------------------------------------------------
@@ -446,7 +494,7 @@ verify_installation() {
             print_success "skill: $skill"
         else
             print_error "skill: $skill — MISSING"
-            ((errors++))
+            errors=$((errors + 1))
         fi
     done
 
@@ -456,7 +504,7 @@ verify_installation() {
             print_success "agent: $agent"
         else
             print_error "agent: $agent — MISSING"
-            ((errors++))
+            errors=$((errors + 1))
         fi
     done
 
@@ -468,13 +516,26 @@ verify_installation() {
         ((errors++))
     fi
 
+    # Check hooks
+    for hook_file in "$SOURCE_HOOKS"/*.sh; do
+        if [ -f "$hook_file" ]; then
+            local name=$(basename "$hook_file")
+            if [ -f "$CLAUDE_DIR/hooks/$name" ]; then
+                print_success "hook: $name"
+            else
+                print_error "hook: $name — MISSING"
+                errors=$((errors + 1))
+            fi
+        fi
+    done
+
     # Check CLAUDE.md (only if we installed it)
     if [ "$PRESERVE_CLAUDE_MD" = false ]; then
         if [ -f "$CLAUDE_DIR/CLAUDE.md" ]; then
             print_success "CLAUDE.md"
         else
             print_error "CLAUDE.md — MISSING"
-            ((errors++))
+            errors=$((errors + 1))
         fi
     fi
 
@@ -502,6 +563,7 @@ print_summary() {
     echo "  $SKILLS_INSTALLED skills   (11 wosy + 3 tool)"
     echo "  $AGENTS_INSTALLED agents    (code-reviewer, security-auditor)"
     echo "  $RULES_INSTALLED rule      (wosy-conductor)"
+    echo "  $HOOKS_INSTALLED hooks    (validate-bash)"
     if [ "$CLAUDE_MD_INSTALLED" -eq 1 ]; then
         echo "  1 CLAUDE.md (global config)"
     fi
@@ -530,6 +592,7 @@ print_summary() {
     echo "  * Agents — code-reviewer and security-auditor for /review workflows"
     echo "  * Rules — wosy-conductor enforces conductor discipline automatically"
     echo "  * Tool skills — debugging, tdd, verify available in every project"
+    echo "  * Hooks — validate-bash.sh blocks dangerous commands pre-execution"
     echo "  * Cleaner ~/.claude — no more commands/ directory"
     echo ""
 
@@ -574,6 +637,7 @@ main() {
     echo "  - 14 skills   (11 wosy workflow + 3 tool skills)"
     echo "  - 2 agents    (code-reviewer, security-auditor)"
     echo "  - 1 rule      (wosy-conductor)"
+    echo "  - hooks     (validate-bash.sh)"
     if [ "$PRESERVE_CLAUDE_MD" = false ]; then
         echo "  - CLAUDE.md   (global config)"
     else
@@ -602,6 +666,7 @@ main() {
     install_skills
     install_agents
     install_rules
+    install_hooks
     install_claude_md
     configure_gitignore
     remove_legacy_commands

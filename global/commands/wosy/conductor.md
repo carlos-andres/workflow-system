@@ -1,3 +1,9 @@
+> **DEPRECATED (v3.0)** — Legacy v2.0 command file kept for reference only.  
+> Active version: `~/.claude/rules/wosy-conductor.md` (always-on rule)  
+> See [CHANGELOG.md](../../../CHANGELOG.md) for migration details.
+
+---
+
 # Conductor Discipline
 
 Rules for keeping the main window clean and architectural.

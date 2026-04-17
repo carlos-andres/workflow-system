@@ -1,3 +1,9 @@
+> **DEPRECATED (v3.0)** — Legacy v2.0 command file kept for reference only.  
+> Active version: `~/.claude/skills/wosy-plan/SKILL.md`  
+> See [CHANGELOG.md](../../../CHANGELOG.md) for migration details.
+
+---
+
 # /plan - Implementation Planning
 
 Design the implementation approach and create a task breakdown.
@@ -42,7 +48,7 @@ Before writing the plan, confirm:
 2. [ ] The pattern from `Verified References` is still the right fit
 3. [ ] No new unknowns since research
 
-If any check fails, re-run `/wosy:research` on the affected area. This is a hard gate.
+If any check fails, re-run `/research` on the affected area. This is a hard gate.
 
 ### Step 3: Create Implementation Plan
 
@@ -214,8 +220,8 @@ Score each factor using signals from research.md:
 |------|--------------|-----------|
 | **XS** | Trivial — typo, config tweak, single-line fix | Skip dispatch. Just do it. No tasks.md needed. |
 | **S** | Small — clear scope, existing patterns, 1-3 files | Manual — work through tasks.md checkboxes |
-| **M** | Medium — multi-file, some parallelizable work | `/wosy:dispatch` — wosy orchestrates sub-agents |
-| **L** | Large — cross-domain, tight deps, needs review loops | `/wosy:dispatch` + thorough review via `/work ship` |
+| **M** | Medium — multi-file, some parallelizable work | `/dispatch` — wosy orchestrates sub-agents |
+| **L** | Large — cross-domain, tight deps, needs review loops | `/dispatch` + thorough review via `/work ship` |
 | **XL** | Too big — must split into smaller tickets | Split into sub-tickets. Run `/plan` on each sub-ticket, then `/dispatch` per ticket. |
 
 Output sizing to user:

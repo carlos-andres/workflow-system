@@ -1,3 +1,9 @@
+> **DEPRECATED (v3.0)** — Legacy v2.0 command file kept for reference only.  
+> Active version: `~/.claude/skills/wosy-research/SKILL.md`  
+> See [CHANGELOG.md](../../../CHANGELOG.md) for migration details.
+
+---
+
 # /research - Codebase Exploration
 
 Explore the codebase to understand patterns, conventions, and related code before making changes.
@@ -53,7 +59,7 @@ All agents run with `run_in_background: true`.
 1. **Reference-first**: Before designing anything, find an existing implementation in this codebase that does something similar. If none exists, state that explicitly.
 2. **Verify, don't assume**: Every claim in research.md must link to a file path and line range. No "the codebase probably uses X."
 3. **No phantom patterns**: Only document patterns you found with `rg`/`fd` and read with your own eyes. Never infer a pattern from file names alone.
-4. **Unknowns from intake**: Address every item in status.md `Unknowns` list. Each must become either a finding or a question for `/wosy:spec`.
+4. **Unknowns from intake**: Address every item in status.md `Unknowns` list. Each must become either a finding or a question for `/spec`.
 
 Using `rg` (ripgrep) and `fd`, search for:
 
@@ -236,7 +242,7 @@ Key findings:
 - Risks: {brief list}
 
 Unknowns resolved: {count} / {total from intake}
-Unresolved → forwarded to /wosy:spec
+Unresolved → forwarded to /spec
 
 {If tooling patterns found:}
 Tooling detected: {count} patterns — saved to project memory

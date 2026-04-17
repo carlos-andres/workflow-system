@@ -1,3 +1,9 @@
+> **DEPRECATED (v3.0)** — Legacy v2.0 command file kept for reference only.  
+> Active version: `~/.claude/skills/wosy-intake/SKILL.md`  
+> See [CHANGELOG.md](../../../CHANGELOG.md) for migration details.
+
+---
+
 # /intake - Task Intake & Workspace Setup
 
 Classify the task and create the working environment + task record.
@@ -69,7 +75,7 @@ Before proceeding, state explicitly:
 
 **Anti-assumption rules:**
 - If the description is vague, challenge it. Ask "what does X mean in this codebase?"
-- Never infer architecture from the description alone — flag unknowns for `/wosy:research`
+- Never infer architecture from the description alone — flag unknowns for `/research`
 - If the task touches code you haven't read, mark scope as **unclear** regardless of what the user said
 
 ### Step 5: Suggest Work Mode
