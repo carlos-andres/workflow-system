@@ -46,6 +46,7 @@ CLAUDE_MD_INSTALLED=0
 
 # Flags
 PRESERVE_CLAUDE_MD=false
+AUTO_YES=false
 
 #-------------------------------------------------------------------------------
 # Parse Arguments
@@ -56,11 +57,15 @@ for arg in "$@"; do
         --preserve)
             PRESERVE_CLAUDE_MD=true
             ;;
+        --yes|-y)
+            AUTO_YES=true
+            ;;
         --help|-h)
-            echo "Usage: ./install.sh [--preserve]"
+            echo "Usage: ./install.sh [--preserve] [--yes]"
             echo ""
             echo "Flags:"
             echo "  --preserve    Skip overwriting ~/.claude/CLAUDE.md"
+            echo "  --yes, -y     Skip confirmation prompts"
             exit 0
             ;;
         *)
@@ -395,8 +400,12 @@ remove_legacy_commands() {
         print_step "Found legacy commands directory: ~/.claude/commands/wosy/"
         print_info "v3.0 uses skills instead of commands. The old commands are no longer needed."
         echo ""
-        read -p "  Remove ~/.claude/commands/wosy/? (y/n) " -n 1 -r
-        echo ""
+        if [ "$AUTO_YES" = false ]; then
+            read -p "  Remove ~/.claude/commands/wosy/? (y/n) " -n 1 -r
+            echo ""
+        else
+            REPLY=y
+        fi
 
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             rm -rf "$legacy_dir"
@@ -575,8 +584,12 @@ main() {
     echo "Existing files will be backed up before overwriting."
     echo ""
 
-    read -p "Continue? (y/n) " -n 1 -r
-    echo ""
+    if [ "$AUTO_YES" = false ]; then
+        read -p "Continue? (y/n) " -n 1 -r
+        echo ""
+    else
+        REPLY=y
+    fi
 
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         echo "Aborted."
