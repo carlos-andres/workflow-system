@@ -163,80 +163,94 @@ preflight() {
 }
 
 #-------------------------------------------------------------------------------
-# Step 2: Backup Existing Files
+# Step 2: Cleaning Previous Installation
 #-------------------------------------------------------------------------------
 
-backup_existing() {
-    print_header "Step 2: Backing Up Existing Files"
+clean_previous() {
+    print_header "Step 2: Cleaning Previous Installation"
 
-    local backed_up=0
+    local cleaned=0
 
-    # Backup CLAUDE.md (unless --preserve, where we just skip entirely)
+    # Backup CLAUDE.md only if --preserve is NOT set
     if [ "$PRESERVE_CLAUDE_MD" = false ] && [ -f "$CLAUDE_DIR/CLAUDE.md" ]; then
         print_step "Backing up CLAUDE.md..."
         /bin/cp "$CLAUDE_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md.bak"
         print_success "CLAUDE.md -> CLAUDE.md.bak"
-        ((backed_up++))
     fi
 
-    # Backup existing wosy-* skill directories
-    for skill_dir in "$CLAUDE_DIR"/skills/wosy-*; do
-        if [ -d "$skill_dir" ]; then
-            local name=$(basename "$skill_dir")
-            print_step "Backing up skill $name..."
-            /bin/cp -R "$skill_dir" "${skill_dir}.bak"
-            print_success "$name -> ${name}.bak"
-            backed_up=$((backed_up + 1))
+    # Remove all .bak and .bak.bak directories/files from managed dirs
+    for managed_dir in "$CLAUDE_DIR/skills" "$CLAUDE_DIR/agents" "$CLAUDE_DIR/rules" "$CLAUDE_DIR/hooks"; do
+        if [ -d "$managed_dir" ]; then
+            while IFS= read -r -d '' bak_path; do
+                print_step "Removing stale backup: $(basename "$bak_path")..."
+                rm -rf "$bak_path"
+                print_success "Removed $(basename "$bak_path")"
+                cleaned=$((cleaned + 1))
+            done < <(find "$managed_dir" -maxdepth 1 \( -name "*.bak" -o -name "*.bak.bak" \) -print0 2>/dev/null)
         fi
     done
 
-    # Backup existing tool skill directories (debugging, tdd, verify)
-    for tool_skill in debugging tdd verify; do
-        if [ -d "$CLAUDE_DIR/skills/$tool_skill" ]; then
-            print_step "Backing up skill $tool_skill..."
-            /bin/cp -R "$CLAUDE_DIR/skills/$tool_skill" "$CLAUDE_DIR/skills/${tool_skill}.bak"
-            print_success "$tool_skill -> ${tool_skill}.bak"
-            backed_up=$((backed_up + 1))
+    # Remove managed wosy-* skill directories
+    local wosy_skills=(
+        wosy-work wosy-intake wosy-research wosy-spec wosy-plan
+        wosy-dispatch wosy-status wosy-context wosy-phase0 wosy-pr-review wosy-models
+    )
+    for skill in "${wosy_skills[@]}"; do
+        if [ -d "$CLAUDE_DIR/skills/$skill" ]; then
+            print_step "Removing skill $skill..."
+            rm -rf "$CLAUDE_DIR/skills/$skill"
+            print_success "Removed $skill"
+            cleaned=$((cleaned + 1))
         fi
     done
 
-    # Backup existing agent files
-    for agent_file in "$CLAUDE_DIR"/agents/*.md; do
-        if [ -f "$agent_file" ]; then
-            local name=$(basename "$agent_file")
-            print_step "Backing up agent $name..."
-            /bin/cp "$agent_file" "${agent_file}.bak"
-            print_success "$name -> ${name}.bak"
-            backed_up=$((backed_up + 1))
+    # Remove managed tool skill directories
+    for skill in debugging tdd verify; do
+        if [ -d "$CLAUDE_DIR/skills/$skill" ]; then
+            print_step "Removing skill $skill..."
+            rm -rf "$CLAUDE_DIR/skills/$skill"
+            print_success "Removed $skill"
+            cleaned=$((cleaned + 1))
         fi
     done
 
-    # Backup existing wosy rule files
-    for rule_file in "$CLAUDE_DIR"/rules/wosy-*.md; do
-        if [ -f "$rule_file" ]; then
-            local name=$(basename "$rule_file")
-            print_step "Backing up rule $name..."
-            /bin/cp "$rule_file" "${rule_file}.bak"
-            print_success "$name -> ${name}.bak"
-            backed_up=$((backed_up + 1))
+    # Remove managed agent files
+    for agent in code-reviewer.md security-auditor.md; do
+        if [ -f "$CLAUDE_DIR/agents/$agent" ]; then
+            print_step "Removing agent $agent..."
+            rm -f "$CLAUDE_DIR/agents/$agent"
+            print_success "Removed $agent"
+            cleaned=$((cleaned + 1))
         fi
     done
 
-    # Backup existing hook files
-    for hook_file in "$CLAUDE_DIR"/hooks/*.sh; do
+    # Remove managed rule files
+    for rule in wosy-conductor.md; do
+        if [ -f "$CLAUDE_DIR/rules/$rule" ]; then
+            print_step "Removing rule $rule..."
+            rm -f "$CLAUDE_DIR/rules/$rule"
+            print_success "Removed $rule"
+            cleaned=$((cleaned + 1))
+        fi
+    done
+
+    # Remove managed hook files (match against source hooks)
+    for hook_file in "$SOURCE_HOOKS"/*.sh; do
         if [ -f "$hook_file" ]; then
             local name=$(basename "$hook_file")
-            print_step "Backing up hook $name..."
-            /bin/cp "$hook_file" "${hook_file}.bak"
-            print_success "$name -> ${name}.bak"
-            backed_up=$((backed_up + 1))
+            if [ -f "$CLAUDE_DIR/hooks/$name" ]; then
+                print_step "Removing hook $name..."
+                rm -f "$CLAUDE_DIR/hooks/$name"
+                print_success "Removed $name"
+                cleaned=$((cleaned + 1))
+            fi
         fi
     done
 
-    if [ "$backed_up" -eq 0 ]; then
-        print_info "No existing files to back up (fresh install)"
+    if [ "$cleaned" -eq 0 ]; then
+        print_info "Nothing to clean (fresh install)"
     else
-        print_success "Backed up $backed_up items"
+        print_success "Cleaned $cleaned items"
     fi
 }
 
@@ -645,7 +659,7 @@ main() {
     fi
     echo "  - .devwork/   added to global gitignore"
     echo ""
-    echo "Existing files will be backed up before overwriting."
+    echo "Previous wosy installation will be cleaned before installing."
     echo ""
 
     if [ "$AUTO_YES" = false ]; then
@@ -661,7 +675,7 @@ main() {
     fi
 
     preflight
-    backup_existing
+    clean_previous
     create_structure
     install_skills
     install_agents
